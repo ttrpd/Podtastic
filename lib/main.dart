@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:podtastic/WebPodcasts/itunes_podcast.dart';
+import 'package:podtastic/WebPodcasts/itunes_podcasts.dart';
 import 'package:simple_permissions/simple_permissions.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:http/http.dart' as http;
@@ -9,6 +11,7 @@ void main() => runApp(MyApp());
 
 class MyApp extends StatelessWidget {
   // This widget is the root of your application.
+  ItunesPodcasts itunesPodcasts = ItunesPodcasts();
   @override
   Widget build(BuildContext context) {
     SimplePermissions.requestPermission(Permission.ReadExternalStorage);
@@ -32,21 +35,11 @@ class MyApp extends StatelessWidget {
           // ),
           child: IconButton(
             icon: Icon(Icons.playlist_add, color: Colors.black,),
-            color: Colors.blue,
-            onPressed: retrieveTest,
+            onPressed: ItunesPodcast('https://itunes.apple.com/us/podcast/99-invisible/id394775318?mt=2').update,
           ),
         ),
       ),
     );
-  }
-
-  void getCatagories() async
-  {
-    var resp = await http.get(
-      'https://itunes.apple.com/us/genre/podcasts/id26?'
-    );
-    var doc = parse(resp.body);
-    // doc.
   }
 
   void storeTest() async
@@ -88,6 +81,5 @@ class MyApp extends StatelessWidget {
     
 
   }
-
 }
 
