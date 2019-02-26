@@ -11,10 +11,12 @@ void main() => runApp(MyApp());
 
 class MyApp extends StatelessWidget {
   // This widget is the root of your application.
-  ItunesPodcasts itunesPodcasts = ItunesPodcasts();
+  ItunesPodcast podcast = ItunesPodcast('https://itunes.apple.com/us/podcast/99-invisible/id394775318?mt=2');
+
   @override
   Widget build(BuildContext context) {
-    SimplePermissions.requestPermission(Permission.ReadExternalStorage);
+    // ItunesPodcast('https://itunes.apple.com/us/podcast/99-invisible/id394775318?mt=2').update();
+    // SimplePermissions.requestPermission(Permission.ReadExternalStorage);
     return MaterialApp(
       title: 'Podtastic',
       theme: ThemeData(
@@ -25,18 +27,40 @@ class MyApp extends StatelessWidget {
           centerTitle: true,
           title: Text('Podtastic'),
         ),
-        body: Container(
-          width: double.infinity,
-          height: double.infinity,
-          alignment: Alignment.center,
-          color: Colors.white,
-          // child: ListView.builder(
-          //   itemCount: ,
-          // ),
-          child: IconButton(
-            icon: Icon(Icons.playlist_add, color: Colors.black,),
-            onPressed: ItunesPodcast('https://itunes.apple.com/us/podcast/99-invisible/id394775318?mt=2').update,
-          ),
+        body: FutureBuilder(
+          future: podcast.resp,
+          builder: (BuildContext context, AsyncSnapshot<http.Response> snapshot)
+          {
+            return Column(
+              children: <Widget>[
+                Container(
+                  height: MediaQuery.of(context).size.width,
+                  width: MediaQuery.of(context).size.width,
+                  child: podcast.art,
+                ),
+                Flexible(
+                  child: ListView.builder(
+                    shrinkWrap: true,
+                    itemCount: podcast.episodes.length,
+                    itemBuilder: (BuildContext context, int index)
+                    {
+                      return Container(
+                        height: 50.0,
+                        child: RichText(
+                          text: TextSpan(
+                            text: podcast.episodes.elementAt(index).name,
+                            style: TextStyle(
+                              color: Colors.black,
+                            ),
+                          ),
+                        ),
+                      );
+                    },
+                  ),
+                ),
+              ],
+            );
+          },
         ),
       ),
     );
