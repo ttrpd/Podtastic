@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:podtastic/WebPodcasts/itunes_podcast.dart';
+import 'package:podtastic/WebPodcasts/podcast.dart';
 import 'package:podtastic/WebPodcasts/itunes_podcasts.dart';
-import 'package:simple_permissions/simple_permissions.dart';
+import 'package:podtastic/my_podcasts.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:http/http.dart' as http;
 import 'package:html/parser.dart' show parse;
@@ -11,12 +11,14 @@ void main() => runApp(MyApp());
 
 class MyApp extends StatelessWidget {
   // This widget is the root of your application.
-  ItunesPodcast podcast = ItunesPodcast('https://itunes.apple.com/us/podcast/99-invisible/id394775318?mt=2');
 
   @override
   Widget build(BuildContext context) {
     // ItunesPodcast('https://itunes.apple.com/us/podcast/99-invisible/id394775318?mt=2').update();
     // SimplePermissions.requestPermission(Permission.ReadExternalStorage);
+    MyPodcasts myPodcasts = MyPodcasts();
+    Podcast podcast = Podcast('394775318');
+    PodcastsList podslist = PodcastsList('https://itunes.apple.com/us/genre/podcasts-arts/id1301?mt=2');
     return MaterialApp(
       title: 'Podtastic',
       theme: ThemeData(
@@ -26,6 +28,11 @@ class MyApp extends StatelessWidget {
         appBar: AppBar(
           centerTitle: true,
           title: Text('Podtastic'),
+        ),
+        floatingActionButton: FloatingActionButton(
+          onPressed: ()=>myPodcasts.getEpisodesByPodcastId(int.parse(podcast.id)).then((v)=>print(v)),//()=>myPodcasts.getPodcast(int.parse(podcast.id)).then((v)=>print(v)),
+          backgroundColor: Theme.of(context).primaryColor,
+          child: Icon(Icons.add),
         ),
         body: FutureBuilder(
           future: podcast.resp,
@@ -38,25 +45,31 @@ class MyApp extends StatelessWidget {
                   width: MediaQuery.of(context).size.width,
                   child: podcast.art,
                 ),
-                Flexible(
-                  child: ListView.builder(
-                    shrinkWrap: true,
-                    itemCount: podcast.episodes.length,
-                    itemBuilder: (BuildContext context, int index)
-                    {
-                      return Container(
-                        height: 50.0,
-                        child: RichText(
-                          text: TextSpan(
-                            text: podcast.episodes.elementAt(index).name,
-                            style: TextStyle(
-                              color: Colors.black,
+                FutureBuilder(
+                  future: podcast.feed,
+                  builder: (BuildContext context, AsyncSnapshot<http.Response> snapshot)
+                  {
+                    return Flexible(
+                      child: ListView.builder(
+                        shrinkWrap: true,
+                        itemCount: podcast.episodes.length,
+                        itemBuilder: (BuildContext context, int index)
+                        {
+                          return Container(
+                            height: 50.0,
+                            child: RichText(
+                              text: TextSpan(
+                                text: podcast.episodes.elementAt(index).name,
+                                style: TextStyle(
+                                  color: Colors.black,
+                                ),
+                              ),
                             ),
-                          ),
-                        ),
-                      );
-                    },
-                  ),
+                          );
+                        },
+                      ),
+                    );
+                  },
                 ),
               ],
             );

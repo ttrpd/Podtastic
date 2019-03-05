@@ -6,6 +6,7 @@ class ItunesPodcasts
 {
 
   dom.Document doc;
+  
   Future<http.Response> resp = http.get(
       'https://itunes.apple.com/us/genre/podcasts/id26?'
   );
@@ -52,5 +53,25 @@ class ItunesPodcasts
     }
 
     return genreMap;
+  }
+}
+
+class PodcastsList
+{
+  String link;
+  dom.Document doc;
+  Future<http.Response> resp;
+  Map<String, String> podcasts = Map<String, String>();
+
+
+  PodcastsList(this.link)
+  {
+    this.resp = http.get(link);
+    resp.then((r){
+      doc = parse(r.body);
+      doc.getElementById('selectedcontent').getElementsByTagName('li').forEach((li){
+        podcasts.addAll({ li.children.first.text : li.children.first.attributes['href'] });
+      });
+    });
   }
 }
