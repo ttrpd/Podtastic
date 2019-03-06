@@ -1,49 +1,74 @@
 
+
+
+import 'package:flutter/widgets.dart';
 import 'package:podtastic/WebPodcasts/podcast.dart';
 import 'package:sqflite/sqflite.dart';
 
-class MyPodcasts
+class MyPodcastsProvider extends InheritedWidget
 {
-
-  Future<String> dbPath;
+  List<Podcast> podcasts = List<Podcast>();
   Database db;
-
-
-  MyPodcasts()
+  
+  
+  MyPodcastsProvider({Key key, Widget child,}) : super(key: key, child: child)
   {
-    dbPath = getDatabasesPath();
-    dbPath.then((p){
-      String path = p + 'podcasts.db';
-      openDatabase(
-        path,
-        version: 1,
-        onConfigure: (Database db) async {
-          await db.execute("PRAGMA foreign_keys = ON");
-        },
-        onCreate: (Database db, int version) async {
-          await db.execute("""CREATE TABLE Podcasts (
-            id INTEGER PRIMARY KEY,
-            title VARCHAR,
-            link VARCHAR,
-            description VARCHAR,
-            played INTEGER,
-            imageLink VARCHAR
-          )""");
-          await db.execute(""" CREATE TABLE Episodes (
-            episodeId INTEGER PRIMARY KEY AUTOINCREMENT,
-            podcastId INTEGER,
-            name VARCHAR,
-            link VARCHAR,
-            description VARCHAR,
-            subtitle VARCHAR,
-            number INTEGER,
-            duration INTEGER,
-            released VARCHAR,
-            FOREIGN KEY(podcastId) REFERENCES Podcasts(id)
-          )""");
-        },
-      ).then((d)=>db = d);
-    });
+    
+  }
+
+  Future<List<Podcast>> getPodcastList() async
+  {
+    String path = await getDatabasesPath();
+    path += 'podcasts.db';
+    db = await openDatabase(
+      path,
+      version: 1,
+      onConfigure: (Database db) async {
+        await db.execute("PRAGMA foreign_keys = ON");
+      },
+      onCreate: (Database db, int version) async {
+        await db.execute("""CREATE TABLE Podcasts (
+          id INTEGER PRIMARY KEY,
+          title VARCHAR,
+          link VARCHAR,
+          description VARCHAR,
+          played INTEGER,
+          artLink VARCHAR
+        )""");
+        await db.execute(""" CREATE TABLE Episodes (
+          episodeId INTEGER PRIMARY KEY AUTOINCREMENT,
+          podcastId INTEGER,
+          name VARCHAR,
+          link VARCHAR,
+          description VARCHAR,
+          subtitle VARCHAR,
+          number INTEGER,
+          duration INTEGER,
+          released VARCHAR,
+          FOREIGN KEY(podcastId) REFERENCES Podcasts(id)
+        )""");
+      },
+    );
+    List<Map<String, dynamic>> dbEntries = await getAllPodcasts();
+    for(Map<String, dynamic> pod in dbEntries)
+    {
+      podcasts.add(Podcast(
+        pod['id'].toString(),
+        pod['title'],
+        pod['link'],
+        pod['description'],
+        pod['played'] > 0,
+        pod['artLink'],
+      ));
+    }
+    return podcasts;
+  }
+
+  @override
+  bool updateShouldNotify(InheritedWidget oldWidget) => true;
+
+  static MyPodcastsProvider of(BuildContext context) {
+    return context.inheritFromWidgetOfExactType(MyPodcastsProvider);
   }
 
   Future<List<Map<String, dynamic>>> getAllPodcasts()
@@ -148,5 +173,4 @@ class MyPodcasts
       }
     });
   }
-  
 }

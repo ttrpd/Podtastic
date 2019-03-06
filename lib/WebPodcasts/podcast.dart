@@ -43,7 +43,23 @@ class Podcast
 
   }
 
-  Podcast(this.id)
+  Podcast(this.id, this.title, this.link, this.description, this.played, this.artLink)
+  {
+    resp = http.get(
+      link
+    ).then((r){
+      print('received');
+      json = jsonDecode(r.body)['results'][0];
+      art = Image.network(artLink);
+      feed = http.get(json['feedUrl']);
+      feed.then((rss){
+        var rssFeed = xml.parse(rss.body);
+        rssFeed.findAllElements('item').forEach((i)=>addEpisode(i));
+      });
+    });
+  }
+
+  Podcast.fromId(this.id)
   {
     link = 'https://itunes.apple.com/search?term='+Uri.encodeFull(id)+'&media=podcast';
     resp = http.get(
