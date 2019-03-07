@@ -23,8 +23,12 @@ class MyApp extends StatelessWidget {
           backgroundColor: Colors.white,
           primaryTextTheme: TextTheme(
             body1: TextStyle(
-              color: Colors.grey,
-              fontSize: 24.0,
+              color: Colors.black,
+              fontSize: 36.0,
+            ),
+            body2: TextStyle(
+              color: Colors.red,
+              fontSize: 10.0,
             )
           ),
         ),

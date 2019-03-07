@@ -7,7 +7,7 @@ import 'package:sqflite/sqflite.dart';
 
 class MyPodcastsProvider extends InheritedWidget
 {
-  List<Podcast> podcasts = List<Podcast>();
+  Set<Podcast> podcasts = Set<Podcast>();
   Database db;
   
   
@@ -16,7 +16,7 @@ class MyPodcastsProvider extends InheritedWidget
     
   }
 
-  Future<List<Podcast>> getPodcastList() async
+  Future<Set<Podcast>> getPodcastList() async
   {
     String path = await getDatabasesPath();
     path += 'podcasts.db';
@@ -92,8 +92,9 @@ class MyPodcastsProvider extends InheritedWidget
           "link" : podcast.link,
           "description" : podcast.description,
           "played" : podcast.played?1:0,
-          "imageLink" : podcast.artLink
+          "artLink" : podcast.artLink
         });
+        podcasts.add(podcast);
         print('Added podcast');
       }
       else{
