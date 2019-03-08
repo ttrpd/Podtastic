@@ -21,6 +21,14 @@ class Podcast
   String description;
   Set<Episode> episodes = Set<Episode>();
 
+  operator ==(Object podcast)
+  {
+    return ( podcast is Podcast
+      && this.title == podcast.title
+      && this.id == podcast.id
+    );
+  }
+
   addEpisode(XmlElement i)
   {
 
@@ -32,7 +40,6 @@ class Podcast
     String subtitle = (i.findElements('itunes:subtitle').isNotEmpty)?i.findElements('itunes:subtitle').first.text:'';
     int number = int.parse((i.findElements('itunes:episode').isNotEmpty)?i.findElements('itunes:episode').first.text:'0');
     String dur = (i.findElements('itunes:duration').isNotEmpty)?i.findElements('itunes:duration').first.text:'00';
-    print(dur);
     Duration duration;
     if(dur.isNotEmpty)
     {
@@ -48,8 +55,6 @@ class Podcast
     }
     String released = i.findElements('pubDate').first.text;
     released = released.substring(0,(released.contains('+'))?released.indexOf('+'):0).trim();
-    print(released);
-
     episodes.add( Episode(link, name, description, subtitle, number, duration, released) );
     // }
 

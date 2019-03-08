@@ -30,9 +30,10 @@ class _MyPodcastsPageState extends State<MyPodcastsPage> {
         title: Text('Podtastic'),
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: ()=>setState(() {
-         MyPodcastsProvider.of(context).addPodcast(podcast); 
-        }),
+        onPressed: (){
+          MyPodcastsProvider.of(context).addPodcast(podcast);
+          print(MyPodcastsProvider.of(context).podcasts.length);
+        },
         backgroundColor: Theme.of(context).primaryColor,
         child: Icon(Icons.add),
       ),
@@ -108,7 +109,10 @@ class _MyPodcastsPageState extends State<MyPodcastsPage> {
                             child: RichText(
                               text: TextSpan(
                                 text: podcast.title,
-                                style: Theme.of(context).textTheme.body1
+                                style: TextStyle(
+                                  fontSize: 18.0,
+                                  color: Colors.blue
+                                ),
                               ),
                             ),
                           ),

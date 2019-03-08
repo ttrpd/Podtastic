@@ -11,10 +11,7 @@ class MyPodcastsProvider extends InheritedWidget
   Database db;
   
   
-  MyPodcastsProvider({Key key, Widget child,}) : super(key: key, child: child)
-  {
-    
-  }
+  MyPodcastsProvider({Key key, Widget child,}) : super(key: key, child: child);
 
   Future<Set<Podcast>> getPodcastList() async
   {
@@ -52,14 +49,16 @@ class MyPodcastsProvider extends InheritedWidget
     List<Map<String, dynamic>> dbEntries = await getAllPodcasts();
     for(Map<String, dynamic> pod in dbEntries)
     {
-      podcasts.add(Podcast(
+      Podcast cast = Podcast(
         pod['id'].toString(),
         pod['title'],
         pod['link'],
         pod['description'],
         pod['played'] > 0,
         pod['artLink'],
-      ));
+      );
+      if(!podcasts.contains(cast))
+        podcasts.add(cast);
     }
     return podcasts;
   }
@@ -94,7 +93,9 @@ class MyPodcastsProvider extends InheritedWidget
           "played" : podcast.played?1:0,
           "artLink" : podcast.artLink
         });
-        podcasts.add(podcast);
+        if(!podcasts.contains(podcast))
+          podcasts.add(podcast);
+        
         print('Added podcast');
       }
       else{

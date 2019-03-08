@@ -24,10 +24,10 @@ class MyApp extends StatelessWidget {
           primaryTextTheme: TextTheme(
             body1: TextStyle(
               color: Colors.black,
-              fontSize: 36.0,
+              fontSize: 24.0,
             ),
             body2: TextStyle(
-              color: Colors.red,
+              color: Colors.grey,
               fontSize: 10.0,
             )
           ),
