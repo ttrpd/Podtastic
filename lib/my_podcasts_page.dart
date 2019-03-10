@@ -3,6 +3,7 @@ import 'package:http/http.dart';
 import 'package:podtastic/WebPodcasts/podcast.dart';
 import 'package:podtastic/WebPodcasts/itunes_podcasts.dart';
 import 'package:podtastic/my_podcasts_provider.dart';
+import 'package:flutter_html/flutter_html.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:http/http.dart' as http;
 import 'package:html/parser.dart' show parse;
@@ -21,7 +22,7 @@ class _MyPodcastsPageState extends State<MyPodcastsPage> {
   Widget build(BuildContext context) {
     // ItunesPodcast('https://itunes.apple.com/us/podcast/99-invisible/id394775318?mt=2').update();
     // SimplePermissions.requestPermission(Permission.ReadExternalStorage);
-    Podcast podcast = Podcast.fromId('367330921');
+    Podcast pod = Podcast.fromId('152249110');
     PodcastsList podslist = PodcastsList('https://itunes.apple.com/us/genre/podcasts-arts/id1301?mt=2');
     return Scaffold(
       backgroundColor: Theme.of(context).backgroundColor,
@@ -30,15 +31,14 @@ class _MyPodcastsPageState extends State<MyPodcastsPage> {
         title: Text('Podtastic'),
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: (){
-          MyPodcastsProvider.of(context).addPodcast(podcast);
-          print(MyPodcastsProvider.of(context).podcasts.length);
-        },
+        onPressed: ()=>setState((){
+          MyPodcastsProvider.of(context).addPodcast(pod);
+        }),
         backgroundColor: Theme.of(context).primaryColor,
         child: Icon(Icons.add),
       ),
       body: FutureBuilder(
-        future: MyPodcastsProvider.of(context).getPodcastList(),
+        future: MyPodcastsProvider.of(context).loaded,
         builder: (BuildContext context, AsyncSnapshot<Set<Podcast>> snapshot) {
           if(MyPodcastsProvider.of(context).podcasts.length > 0)
           {
@@ -72,15 +72,15 @@ class _MyPodcastsPageState extends State<MyPodcastsPage> {
     );
   }
 
-  Widget buildPodcastSliver(BuildContext context, Podcast podcast) {
+  Widget buildPodcastSliver(BuildContext context, Podcast podcast){
     double height = MediaQuery.of(context).size.height / 8;
     return Padding(
       padding: const EdgeInsets.only(top: 5.0, bottom: 5.0),
       child: Material(
         elevation: 10.0,
         child: FutureBuilder(
-          future: podcast.resp,
-          builder: (BuildContext context, AsyncSnapshot<Response> snapshot) {
+          future: podcast.pod,
+          builder: (BuildContext context, AsyncSnapshot<void> snapshot) {
             return Container(
               color: Theme.of(context).backgroundColor,
               height: height,
@@ -119,12 +119,7 @@ class _MyPodcastsPageState extends State<MyPodcastsPage> {
                         ),
                         Flexible(
                           fit: FlexFit.tight,
-                          child: RichText(
-                            text: TextSpan(
-                              text: podcast.description,
-                              style: Theme.of(context).textTheme.body2,
-                            ),
-                          ),
+                          child: Html(data: podcast.description),
                         ),
                       ],
                     ),

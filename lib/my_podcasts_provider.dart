@@ -8,10 +8,14 @@ import 'package:sqflite/sqflite.dart';
 class MyPodcastsProvider extends InheritedWidget
 {
   Set<Podcast> podcasts = Set<Podcast>();
+  Future<Set<Podcast>> loaded;
   Database db;
   
   
-  MyPodcastsProvider({Key key, Widget child,}) : super(key: key, child: child);
+  MyPodcastsProvider({Key key, Widget child,}) : super(key: key, child: child)
+  {
+    loaded = getPodcastList();
+  }
 
   Future<Set<Podcast>> getPodcastList() async
   {
@@ -49,6 +53,7 @@ class MyPodcastsProvider extends InheritedWidget
     List<Map<String, dynamic>> dbEntries = await getAllPodcasts();
     for(Map<String, dynamic> pod in dbEntries)
     {
+      // print(pod);
       Podcast cast = Podcast(
         pod['id'].toString(),
         pod['title'],
@@ -57,7 +62,7 @@ class MyPodcastsProvider extends InheritedWidget
         pod['played'] > 0,
         pod['artLink'],
       );
-      if(!podcasts.contains(cast))
+      if(podcasts.where((p)=>p.id==cast.id).isEmpty)
         podcasts.add(cast);
     }
     return podcasts;
@@ -83,17 +88,19 @@ class MyPodcastsProvider extends InheritedWidget
   void addPodcast(Podcast podcast)
   {
     getPodcast(int.parse(podcast.id)).then((v){
-      if(v.isEmpty)
+      if(v.where((i)=>i['id'].toString()==podcast.id).isEmpty)
       {
-        db.insert("Podcasts", {
-          "id" : podcast.id,
-          "title" : podcast.title,
-          "link" : podcast.link,
-          "description" : podcast.description,
-          "played" : podcast.played?1:0,
-          "artLink" : podcast.artLink
+        podcast.feed.then((r){
+          db.insert("Podcasts", {
+            "id" : podcast.id,
+            "title" : podcast.title,
+            "link" : podcast.link,
+            "description" : podcast.description,
+            "played" : podcast.played?1:0,
+            "artLink" : podcast.artLink
+          });
         });
-        if(!podcasts.contains(podcast))
+        if(podcasts.where((p)=>p.id==podcast.id).isEmpty)
           podcasts.add(podcast);
         
         print('Added podcast');

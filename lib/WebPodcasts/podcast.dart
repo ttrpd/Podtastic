@@ -10,7 +10,10 @@ import 'package:xml/xml.dart';
 class Podcast
 {
   Future<http.Response> resp;
+  http.Response resp1;
   Future<http.Response> feed;
+  http.Response feed1;
+  Future<Podcast> pod;
   dynamic json;
   String id;
   String title;
@@ -79,24 +82,37 @@ class Podcast
   Podcast.fromId(this.id)
   {
     link = 'https://itunes.apple.com/search?term='+Uri.encodeFull(id)+'&media=podcast';
-    resp = http.get(
-      link
-    ).then((r){
-      print('received');
-      json = jsonDecode(r.body)['results'][0];
-      title = json['collectionName'];
-      artLink = json['artworkUrl600'];
-      art = Image.network(artLink);
-      feed = http.get(json['feedUrl']);
-      feed.then((rss){
-        var rssFeed = xml.parse(rss.body);
-        description = rssFeed.findAllElements('description').first.text;
-        rssFeed.findAllElements('item').forEach((i)=>addEpisode(i));
+    played = false;
+    pod = Future((){
+      resp = http.get(
+        link
+      ).then((r){
+        print('received');
+        json = jsonDecode(r.body)['results'][0];
+        // print(jsonDecode(r.body));
+        title = json['collectionName'];
+        artLink = json['artworkUrl100'];
+        art = Image.network(artLink);
+        feed = http.get(json['feedUrl']);
+        feed.then((rss){
+          var rssFeed = xml.parse(rss.body);
+          description = rssFeed.findAllElements('description').first.text;
+          rssFeed.findAllElements('item').forEach((i)=>addEpisode(i));
+        });  
       });
-      
     });
   }
   
+  // Future<Image> getArt() async
+  // {
+  //   if(artLink!=null)
+  //     return Future(()=>Image.network(artLink));
+    
+  //   return Future(() async {
+  //     resp1 = await http.get(link);
+  //     json = jsonDecode(r.body)['results'][0];
+  //   });
+  // }
 
 }
 

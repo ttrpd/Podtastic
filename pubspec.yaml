@@ -24,6 +24,8 @@ dependencies:
 
   html: ^0.13.3+3
 
+  flutter_html: ^0.8.2
+
   xml: ^3.4.0
 
   simple_permissions: "^0.1.2"
