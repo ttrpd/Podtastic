@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
@@ -6,6 +7,7 @@ import 'package:html/parser.dart' show parse;
 import 'package:html/dom.dart' as dom;
 import 'package:xml/xml.dart' as xml;
 import 'package:xml/xml.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 
 class Podcast
 {
@@ -14,11 +16,11 @@ class Podcast
   Future<http.Response> feed;
   http.Response feed1;
   Future<Podcast> pod;
-  dynamic json;
+  // dynamic json;
   String id;
   String title;
   bool played = false;
-  Image art;
+  // Image art;
   String artLink;
   String link;
   String description;
@@ -37,8 +39,8 @@ class Podcast
 
     // if(episodes.contains())
     // {
-    String link = i.findElements('enclosure').first.attributes.first.value;
-    String name = i.findElements('title').first.text;
+    String link = (i.findElements('enclosure').isNotEmpty)?i.findElements('enclosure').first.attributes.first.value:'';
+    String name = (i.findElements('title').isNotEmpty)?i.findElements('title').first.text:'';
     String description = (i.findElements('description').isNotEmpty)?i.findElements('description').first.text:'';
     String subtitle = (i.findElements('itunes:subtitle').isNotEmpty)?i.findElements('itunes:subtitle').first.text:'';
     int number = int.parse((i.findElements('itunes:episode').isNotEmpty)?i.findElements('itunes:episode').first.text:'0');
@@ -46,17 +48,22 @@ class Podcast
     Duration duration;
     if(dur.isNotEmpty)
     {
-      duration = Duration(
-        seconds: int.parse(dur.split(':').reversed.elementAt(0)),
-        minutes: (dur.split(':').length>1)?int.parse(dur.split(':').reversed.elementAt(1)):0,
-        hours: (dur.split(':').length>2)?int.parse(dur.split(':').reversed.elementAt(2)):0,
-      );
+      int seconds = 0;
+      for(int j = 0; j < dur.split(':').reversed.length; j++)
+      {
+        seconds += pow(int.parse(dur.split(':').reversed.elementAt(j)),j);
+      }
+      duration = Duration(seconds: seconds);
     }
     else
     {
       duration = Duration.zero;
     }
-    String released = i.findElements('pubDate').first.text;
+
+    String released = '';
+    if(i.findAllElements('pubDate')!=null)
+      released = i.findElements('pubDate').first.text;
+
     released = released.substring(0,(released.contains('+'))?released.indexOf('+'):0).trim();
     episodes.add( Episode(link, name, description, subtitle, number, duration, released) );
     // }
@@ -65,42 +72,54 @@ class Podcast
 
   Podcast(this.id, this.title, this.link, this.description, this.played, this.artLink)
   {
-    art = Image.network(artLink);
-    resp = http.get(
-      link
-    ).then((r){
-      print('received');
-      json = jsonDecode(r.body)['results'][0];
-      feed = http.get(json['feedUrl']);
-      feed.then((rss){
-        var rssFeed = xml.parse(rss.body);
-        rssFeed.findAllElements('item').forEach((i)=>addEpisode(i));
-      });
-    });
+    // art = Image.network(artLink);
+    // pod = complete();
   }
 
   Podcast.fromId(this.id)
   {
-    link = 'https://itunes.apple.com/search?term='+Uri.encodeFull(id)+'&media=podcast';
+    // pod = complete();
+    // link = 'https://itunes.apple.com/search?term='+Uri.encodeFull(id)+'&media=podcast';
+    // played = false;
+    // pod = Future((){
+    //   resp = http.get(
+    //     link
+    //   ).then((r){
+    //     print('received');
+    //     var json = jsonDecode(r.body)['results'][0];
+    //     // print(jsonDecode(r.body));
+    //     title = json['collectionName'];
+    //     artLink = json['artworkUrl100'];
+    //     // art = Image.network(artLink);
+    //     feed = http.get(json['feedUrl']);
+    //     feed.then((rss){
+    //       var rssFeed = xml.parse(rss.body);
+    //       description = rssFeed.findAllElements('description').first.text;
+    //       rssFeed.findAllElements('item').forEach((i)=>addEpisode(i));
+    //     });  
+    //   });
+    // });
+  }
+
+  Future<Podcast> complete() async
+  {
+    if(episodes.isNotEmpty)
+
+    if(link==null)
+      link = 'https://itunes.apple.com/search?term='+Uri.encodeFull(id)+'&media=podcast';
+
+    http.Response r = await http.get(link);
+    Map<String, dynamic> json = jsonDecode(r.body)['results'][0];
+    artLink = json['artworkUrl100'];
+    if(title==null)
+      title = json['collectionName'];
+    
+    http.Response f = await http.get(json['feedUrl']);
+    var rssFeed = xml.parse(f.body);
+    description = rssFeed.findAllElements('description').first.text;
     played = false;
-    pod = Future((){
-      resp = http.get(
-        link
-      ).then((r){
-        print('received');
-        json = jsonDecode(r.body)['results'][0];
-        // print(jsonDecode(r.body));
-        title = json['collectionName'];
-        artLink = json['artworkUrl100'];
-        art = Image.network(artLink);
-        feed = http.get(json['feedUrl']);
-        feed.then((rss){
-          var rssFeed = xml.parse(rss.body);
-          description = rssFeed.findAllElements('description').first.text;
-          rssFeed.findAllElements('item').forEach((i)=>addEpisode(i));
-        });  
-      });
-    });
+    rssFeed.findAllElements('item').forEach((i)=>addEpisode(i));
+    return this;
   }
   
   // Future<Image> getArt() async

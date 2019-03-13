@@ -28,6 +28,8 @@ dependencies:
 
   xml: ^3.4.0
 
+  cached_network_image: ^0.7.0
+
   simple_permissions: "^0.1.2"
 
   # The following adds the Cupertino Icons font to your application.

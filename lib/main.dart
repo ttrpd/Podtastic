@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:podtastic/WebPodcasts/podcast.dart';
+import 'package:podtastic/AddPodcast/add_podcast_genre_page.dart';
 import 'package:podtastic/WebPodcasts/itunes_podcasts.dart';
 import 'package:podtastic/my_podcasts_page.dart';
 import 'package:podtastic/my_podcasts_provider.dart';
@@ -32,7 +32,7 @@ class MyApp extends StatelessWidget {
             )
           ),
         ),
-        home: MyPodcastsPage()
+        home: MyPodcastsPage(),
       ),
     );
   }
