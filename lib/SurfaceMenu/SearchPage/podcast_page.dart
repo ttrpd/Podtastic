@@ -83,11 +83,6 @@ class _PodcastPageState extends State<PodcastPage> {
                   ),
                 ),
               ),
-              Expanded(
-                child: Container(
-                  color: Colors.orangeAccent,
-                ),
-              ),
             ],
           ),
         ),

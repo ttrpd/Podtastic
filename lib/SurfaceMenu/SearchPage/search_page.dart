@@ -51,16 +51,18 @@ class _SearchPageState extends State<SearchPage> with TickerProviderStateMixin {
   {
     final client = http.Client();
     Response resp = await client.get(pod.feedLink);
-    String respString = resp.body;
-    var channel = RssFeed.parse(respString);
+    var podXML = RssFeed.parse(resp.body);
+
+    print(podXML.items.first.enclosure.url);
+
     List<Episode> episodes = List<Episode>();
-    if(channel.items.first.media.contents.isNotEmpty)
+    if(podXML.items.isNotEmpty)
     {
-      for(RssItem item in channel.items)
+      for(RssItem item in podXML.items)
       {
         episodes.add(
           Episode(
-            item.media.contents.elementAt(0).url,
+            item.enclosure.url,
             item.title,
             item.description,
             '',
@@ -72,13 +74,12 @@ class _SearchPageState extends State<SearchPage> with TickerProviderStateMixin {
         );
       }
     }
-    // print(episodes.first.link);
     setState(() {
       selectedPodcast = Podcast(
-        channel.title,
+        podXML.title,
         pod.feedLink,
-        channel.author,
-        channel.description,
+        podXML.author,
+        podXML.description,
         pod.artLink,
         pod.thumbnailLink,
         episodes
@@ -90,102 +91,105 @@ class _SearchPageState extends State<SearchPage> with TickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
-    return Stack(
-      alignment: Alignment.bottomCenter,
-      children: <Widget>[
-        Column(
-          children: <Widget>[
-            Padding(
-              padding: const EdgeInsets.only(top: 25.0, bottom: 25.0, left: 20.0, right: 20.0),
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(40.0),
-                child: Container(
-                  height: 40.0,
-                  width: double.maxFinite,
-                  color: Color.fromARGB(255, 242, 242, 242),
-                  child: Padding(
-                    padding: const EdgeInsets.only(left: 8.0, right: 8.0),
-                    child: TextField(
-                      controller: searchController,
-                      cursorColor: Theme.of(context).backgroundColor,
-                      decoration: InputDecoration(
-                        hintText: 'Search',
-                        icon: Icon(Icons.search, color: Colors.grey,),
-                        border: InputBorder.none
+    return Container(
+      color: Theme.of(context).primaryColor,
+      child: Stack(
+        alignment: Alignment.bottomCenter,
+        children: <Widget>[
+          Column(
+            children: <Widget>[
+              Padding(
+                padding: const EdgeInsets.only(top: 25.0, bottom: 25.0, left: 20.0, right: 20.0),
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(40.0),
+                  child: Container(
+                    height: 40.0,
+                    width: double.maxFinite,
+                    color: Theme.of(context).primaryColorDark,
+                    child: Padding(
+                      padding: const EdgeInsets.only(left: 8.0, right: 8.0),
+                      child: TextField(
+                        controller: searchController,
+                        cursorColor: Theme.of(context).backgroundColor,
+                        decoration: InputDecoration(
+                          hintText: 'Search',
+                          icon: Icon(Icons.search, color: Colors.grey,),
+                          border: InputBorder.none
+                        ),
+                        onChanged: (s)=>searchforPodcast(s),
                       ),
-                      onChanged: (s)=>searchforPodcast(s),
                     ),
                   ),
                 ),
               ),
-            ),
-            Expanded(
-              child: ListView.builder(
-                physics: BouncingScrollPhysics(),
-                itemCount: podcastList.length,
-                itemBuilder: (BuildContext context, int index) {
-                  return InkWell(
-                    onTap: () async {// open podcast
-                      fp = getPodcastData(podcastList.elementAt(index));
-                      fp.then((p) async {
-                        await PodcastDB.of(context).insertPodcast(p);
-                        await PodcastDB.of(context).getPodcast(p.title);
-                      });
-                      setState(() {
-                        podcastPageOpen = true;
-                      });
-                    },
-                    child: Container(
-                      width: double.maxFinite,
-                      height: 90.0,
-                      alignment: Alignment.centerLeft,
-                      child: Row(
-                        children: <Widget>[
-                          Padding(
-                            padding: const EdgeInsets.all(10.0),
-                            child: ClipRRect(
-                              borderRadius: BorderRadius.circular(5.0),
-                              child: FutureBuilder(
-                                builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot)
-                                {
-                                  return Container(
-                                    width: 60.0,
-                                    height: 60.0,
-                                    decoration: BoxDecoration(
-                                      image: DecorationImage(
-                                        image: NetworkImage(podcastList.elementAt(index).thumbnailLink),
-                                      )
-                                    ),
-                                  );
-                                },
-                              ),
-                            ),
-                          ),
-                          Flexible(
-                            child: Padding(
+              Expanded(
+                child: ListView.builder(
+                  physics: BouncingScrollPhysics(),
+                  itemCount: podcastList.length,
+                  itemBuilder: (BuildContext context, int index) {
+                    return InkWell(
+                      onTap: () async {// open podcast
+                        fp = getPodcastData(podcastList.elementAt(index));
+                        fp.then((p) async {
+                          await PodcastDB.of(context).insertPodcast(p);
+                          await PodcastDB.of(context).getPodcast(p.title);
+                        });
+                        setState(() {
+                          podcastPageOpen = true;
+                        });
+                      },
+                      child: Container(
+                        width: double.maxFinite,
+                        height: 90.0,
+                        alignment: Alignment.centerLeft,
+                        child: Row(
+                          children: <Widget>[
+                            Padding(
                               padding: const EdgeInsets.all(10.0),
-                              child: RichText(
-                                text: TextSpan(
-                                  style: TextStyle(
-                                    color: Colors.black
-                                  ),
-                                  text: podcastList.elementAt(index).title,
+                              child: ClipRRect(
+                                borderRadius: BorderRadius.circular(5.0),
+                                child: FutureBuilder(
+                                  builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot)
+                                  {
+                                    return Container(
+                                      width: 60.0,
+                                      height: 60.0,
+                                      decoration: BoxDecoration(
+                                        image: DecorationImage(
+                                          image: NetworkImage(podcastList.elementAt(index).thumbnailLink),
+                                        )
+                                      ),
+                                    );
+                                  },
                                 ),
                               ),
                             ),
-                          ),
-                        ],
+                            Flexible(
+                              child: Padding(
+                                padding: const EdgeInsets.all(10.0),
+                                child: RichText(
+                                  text: TextSpan(
+                                    style: TextStyle(
+                                      color: Colors.black
+                                    ),
+                                    text: podcastList.elementAt(index).title,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
-                    ),
-                  );
-                },
+                    );
+                  },
 
+                ),
               ),
-            ),
-          ],
-        ),
-        buildSelectedPodcastPage(context),
-      ],
+            ],
+          ),
+          buildSelectedPodcastPage(context),
+        ],
+      ),
     );
   }
 
