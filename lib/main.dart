@@ -14,6 +14,7 @@ class MyApp extends StatelessWidget {
       title: 'Podtastic',
       theme: ThemeData(
         backgroundColor: Color.fromARGB(255, 255, 84, 107),//Color.fromARGB(255,168, 137, 255),
+        scaffoldBackgroundColor: Color.fromARGB(255, 240, 70, 92),
         primaryColor: Colors.white,
         primaryColorDark: Color.fromARGB(255, 242, 242, 242),
         accentColor: Color.fromARGB(255, 9, 0, 41),

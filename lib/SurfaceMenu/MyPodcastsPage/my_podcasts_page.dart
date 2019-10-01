@@ -2,12 +2,8 @@ import 'dart:convert';
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
-import 'package:flutter/material.dart' as prefix0;
-import 'package:http/http.dart';
 import 'package:podtastic/podcast.dart';
-import 'package:http/http.dart' as http;
 import 'package:podtastic/podcast_db.dart';
-import 'package:webfeed/webfeed.dart';
 
 class MyPodcastsPage extends StatefulWidget {
   const MyPodcastsPage({

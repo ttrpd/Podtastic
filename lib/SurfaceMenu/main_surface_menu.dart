@@ -1,8 +1,9 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
-import 'package:podtastic/SurfaceMenu/NowPlayingPage/now_playing_info.dart';
+import 'package:podtastic/SurfaceMenu/NowPlayingPage/now_playing_display.dart';
 import 'package:podtastic/SurfaceMenu/SearchPage/search_page.dart';
 import 'package:podtastic/SurfaceMenu/podcast_menu.dart';
+import 'package:podtastic/SurfaceMenu/surface_drawer.dart';
 
 class MainSurfaceMenu extends StatefulWidget {
 
@@ -26,7 +27,6 @@ class _MainSurfaceMenuState extends State<MainSurfaceMenu> with TickerProviderSt
 
   onMenuTap()
   {
-
     if(slidePercent == 0.0)
     {
       finishSlideStart = 0.0;
@@ -36,14 +36,12 @@ class _MainSurfaceMenuState extends State<MainSurfaceMenu> with TickerProviderSt
     {
       finishSlideStart = 1.0;
       finishSlideEnd = 0.0;
-
     }
     finishSlideController.forward(from: 0.0);
   }
 
   onNowPlayingTap()
   {
-
     if(slidePercent == 0.0)
     {
       finishSlideStart = slidePercent;
@@ -100,17 +98,18 @@ class _MainSurfaceMenuState extends State<MainSurfaceMenu> with TickerProviderSt
               SurfaceDrawer(
                 surfaceDrawerHeight: MediaQuery.of(context).size.height,
                 slidePercent: (slidePercent<0.0)?0.0:slidePercent,
-                bottomPage: Container(color: Theme.of(context).backgroundColor,),
+                bottomPage: NowPlayingControls(),
                 elevation: 0.0,
               ),
               SurfaceDrawer(
                 surfaceDrawerHeight: MediaQuery.of(context).size.height,
                 slidePercent: slidePercent,
                 bottomPage: surfaceDrawerPage,
-                topPage: NowPlayingInfo(
-                  showNowPlaying: showNowPlaying,
+                topPage: NowPlayingDisplay(
                   onBackArrowTap: onNowPlayingTap,
                 ),
+                showTopPage: showNowPlaying,
+                elevation: 30.0,
               ),
             ],
           ),
@@ -120,71 +119,121 @@ class _MainSurfaceMenuState extends State<MainSurfaceMenu> with TickerProviderSt
   }
 }
 
-class SurfaceDrawer extends StatefulWidget {
-  const SurfaceDrawer({
+class NowPlayingControls extends StatefulWidget {
+  const NowPlayingControls({
     Key key,
-    @required this.bottomPage,
-    this.topPage,
-    @required this.surfaceDrawerHeight,
-    @required this.slidePercent,
-    this.initialDisplacement = 100.0,
-    this.elevation = 10.0,
   }) : super(key: key);
 
-  final Widget bottomPage;
-  final Widget topPage;
-
-  final double surfaceDrawerHeight;
-  final double initialDisplacement;
-  final double elevation;
-  final double slidePercent;
-
   @override
-  _SurfaceDrawerState createState() => _SurfaceDrawerState();
+  _NowPlayingControlsState createState() => _NowPlayingControlsState();
 }
 
-class _SurfaceDrawerState extends State<SurfaceDrawer> {
-
+class _NowPlayingControlsState extends State<NowPlayingControls> {
+  double dividerIndent = 100.0;
   @override
   Widget build(BuildContext context) {
+    dividerIndent = (MediaQuery.of(context).size.width/3.75);
     return Container(
-      alignment: Alignment.bottomCenter,
-      child: Transform(
-        alignment: Alignment.centerLeft,
-        transform: Matrix4.translationValues(
-          0.0,
-          (widget.surfaceDrawerHeight * widget.slidePercent) + widget.initialDisplacement,
-          0.0
-        ),
-        child: Material(
-          color: Colors.transparent,
-          elevation: widget.elevation,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25.0)),
-          child: ClipRRect(
-            borderRadius: BorderRadius.circular(25.0),
+      color: Theme.of(context).backgroundColor,
+      child: Column(
+        children: <Widget>[
+          Container(
+            height: MediaQuery.of(context).size.height / 2,
+          ),
+          Expanded(child: buildPlayerControls(context)),
+          // Container(
+          //   alignment: Alignment.topCenter,
+          //   color: Colors.blueAccent,
+          //   child: Divider(
+          //     color: Theme.of(context).primaryColor.withAlpha(80),
+          //     thickness: 2.0,
+          //     indent: dividerIndent,
+          //     endIndent: dividerIndent,
+          //   ),
+          // ),
+          Expanded(
             child: Container(
-              height: widget.surfaceDrawerHeight,
-              width: double.maxFinite,
-              color: Colors.transparent,
-              alignment: Alignment.topCenter,
-              child: Stack(
+              color: Theme.of(context).scaffoldBackgroundColor,
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
-                  Container(
-                    width: double.maxFinite,
-                    height: MediaQuery.of(context).size.height,
-                    child: widget.bottomPage
+                  Expanded(
+                    child: IconButton(
+                      icon: Icon(Icons.star_border),
+                      color: Theme.of(context).primaryColor,
+                      iconSize: 30.0,
+                      onPressed: (){},
+                    ),
                   ),
-                  (widget.topPage!=null)?
-                  Container(
-                    width: double.maxFinite,
-                    height: MediaQuery.of(context).size.height,
-                    child: widget.topPage,
-                  ):Container(),
+                  Expanded(
+                    child: IconButton(
+                      icon: Icon(Icons.launch),
+                      color: Theme.of(context).primaryColor,
+                      iconSize: 30.0,
+                      onPressed: (){},
+                    ),
+                  ),
+                  Expanded(
+                    child: IconButton(
+                      icon: Icon(Icons.menu),
+                      color: Theme.of(context).primaryColor,
+                      iconSize: 30.0,
+                      onPressed: (){},
+                    ),
+                  ),
                 ],
               ),
             ),
           ),
-        ),
+        ],
+      ),
+    );
+  }
+
+  Padding buildPlayerControls(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.only(top: 20.0),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: <Widget>[
+          Expanded(child: Container(),),
+          IconButton(
+            icon: Material(
+              borderRadius: BorderRadius.circular(30.0),
+              child: Icon(Icons.replay_30),
+              elevation: 30.0,
+              color: Colors.transparent,
+            ),
+            color: Theme.of(context).primaryColor,
+            iconSize: MediaQuery.of(context).size.width / 6.5,
+            onPressed: (){},
+          ),
+          Expanded(child: Container(),),
+          IconButton(
+            icon: Material(
+              borderRadius: BorderRadius.circular(30.0),
+              child: Icon(Icons.play_circle_filled),
+              elevation: 30.0,
+              color: Colors.transparent,
+            ),
+            color: Theme.of(context).primaryColor,
+            iconSize: MediaQuery.of(context).size.width / 6,
+            onPressed: (){},
+          ),
+          Expanded(child: Container(),),
+          IconButton(
+            icon: Material(
+              borderRadius: BorderRadius.circular(30.0),
+              child: Icon(Icons.forward_30),
+              elevation: 30.0,
+              color: Colors.transparent,
+            ),
+            color: Theme.of(context).primaryColor,
+            iconSize: MediaQuery.of(context).size.width / 6.5,
+            onPressed: (){},
+          ),
+          Expanded(child: Container(),),
+        ],
       ),
     );
   }
