@@ -27,6 +27,7 @@ class _MainSurfaceMenuState extends State<MainSurfaceMenu> with TickerProviderSt
 
   onMenuTap()
   {
+    FocusScope.of(context).requestFocus(FocusNode());
     if(slidePercent == 0.0)
     {
       finishSlideStart = 0.0;
@@ -42,6 +43,7 @@ class _MainSurfaceMenuState extends State<MainSurfaceMenu> with TickerProviderSt
 
   onNowPlayingTap()
   {
+    FocusScope.of(context).requestFocus(FocusNode());
     if(slidePercent == 0.0)
     {
       finishSlideStart = slidePercent;
@@ -141,16 +143,6 @@ class _NowPlayingControlsState extends State<NowPlayingControls> {
             height: MediaQuery.of(context).size.height / 2,
           ),
           Expanded(child: buildPlayerControls(context)),
-          // Container(
-          //   alignment: Alignment.topCenter,
-          //   color: Colors.blueAccent,
-          //   child: Divider(
-          //     color: Theme.of(context).primaryColor.withAlpha(80),
-          //     thickness: 2.0,
-          //     indent: dividerIndent,
-          //     endIndent: dividerIndent,
-          //   ),
-          // ),
           Expanded(
             child: Container(
               color: Theme.of(context).scaffoldBackgroundColor,

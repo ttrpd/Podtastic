@@ -180,7 +180,37 @@ class PodcastDB extends InheritedWidget
     }
   }
 
-  Future<List<Podcast>> getPodcast(String title) async
+  Future<Podcast> getPodcast(String title) async
+  {
+    Database db = await _db;
+    List<Map<String, Object>> eps = await db.transaction((txn) async {
+      return txn.rawQuery(
+        "SELECT * FROM Podcasts "
+        "WHERE title = "+sqlSanitize(title)
+      );
+    });
+
+    print(eps);
+
+    List<Podcast> pods = new List<Podcast>();
+
+    for(Map<String, Object> row in eps)
+    {
+      pods.add(
+        Podcast(
+          row["title"]??'',
+          row["feedLink"]??'',
+          row["artistName"]??'',
+          row["description"]??'',
+          row["artLink"]??'',
+          row["thumbnailLink"]??''
+        )
+      );
+    }
+    return pods.first ?? null;
+  }
+
+  Future<List<Podcast>> getPodcasts(String title) async
   {
     Database db = await _db;
     List<Map<String, Object>> eps = await db.transaction((txn) async {
