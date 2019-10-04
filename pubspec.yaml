@@ -71,17 +71,41 @@ flutter:
   # "family" key with the font family name, and a "fonts" key with a
   # list giving the asset and other descriptors for the font. For
   # example:
-  # fonts:
-  #   - family: Schyler
-  #     fonts:
-  #       - asset: fonts/Schyler-Regular.ttf
-  #       - asset: fonts/Schyler-Italic.ttf
-  #         style: italic
-  #   - family: Trajan Pro
-  #     fonts:
-  #       - asset: fonts/TrajanPro.ttf
-  #       - asset: fonts/TrajanPro_Bold.ttf
-  #         weight: 700
-  #
+  fonts:
+    - family: AbrilFatface
+      fonts:
+        - asset: fonts/Abril_Fatface/AbrilFatface-Regular.ttf
+    - family: PlayfairDisplaySC
+      fonts:
+        - asset: fonts/Playfair_Display_SC/PlayfairDisplaySC-Black.ttf
+        - asset: fonts/Playfair_Display_SC/PlayfairDisplaySC-BlackItalic.ttf
+        - asset: fonts/Playfair_Display_SC/PlayfairDisplaySC-Bold.ttf
+        - asset: fonts/Playfair_Display_SC/PlayfairDisplaySC-BoldItalic.ttf
+        - asset: fonts/Playfair_Display_SC/PlayfairDisplaySC-Italic.ttf
+        - asset: fonts/Playfair_Display_SC/PlayfairDisplaySC-Regular.ttf
+    - family: BigShouldersDisplay
+      fonts:
+        - asset: fonts/Big_Shoulders_Display/BigShouldersDisplay-Black.ttf
+        - asset: fonts/Big_Shoulders_Display/BigShouldersDisplay-Bold.ttf
+        - asset: fonts/Big_Shoulders_Display/BigShouldersDisplay-ExtraBold.ttf
+        - asset: fonts/Big_Shoulders_Display/BigShouldersDisplay-Light.ttf
+        - asset: fonts/Big_Shoulders_Display/BigShouldersDisplay-Medium.ttf
+        - asset: fonts/Big_Shoulders_Display/BigShouldersDisplay-Regular.ttf
+        - asset: fonts/Big_Shoulders_Display/BigShouldersDisplay-SemiBold.ttf
+        - asset: fonts/Big_Shoulders_Display/BigShouldersDisplay-Thin.ttf
+    - family: Spectral
+      fonts:
+        - asset: fonts/Spectral/Spectral-Bold.ttf
+        - asset: fonts/Spectral/Spectral-ExtraBold.ttf
+        - asset: fonts/Spectral/Spectral-Light.ttf
+        - asset: fonts/Spectral/Spectral-Medium.ttf
+        - asset: fonts/Spectral/Spectral-Regular.ttf
+        - asset: fonts/Spectral/Spectral-SemiBold.ttf
+    - family: Rubik
+      fonts:
+        - asset: fonts/Rubik/Rubik-Bold.ttf
+        - asset: fonts/Rubik/Rubik-Black.ttf
+        - asset: fonts/Rubik/Rubik-Medium.ttf
+        - asset: fonts/Rubik/Rubik-Light.ttf
   # For details regarding fonts from package dependencies,
   # see https://flutter.io/custom-fonts/#from-packages

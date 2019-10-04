@@ -21,11 +21,13 @@ class MyApp extends StatelessWidget {
         primaryTextTheme: TextTheme(
           title: TextStyle(
             color: Colors.black,
-            fontSize: 26.0,
+            fontSize: 28.0,
+            fontFamily: 'AbrilFatface',
           ),
           body1: TextStyle(
             color: Colors.black,
             fontSize: 22.0,
+            fontFamily: 'Rubik',
             
           )
         ),

@@ -107,7 +107,6 @@ class _MyPodcastsPageState extends State<MyPodcastsPage> with TickerProviderStat
             onBackButtonPress:() {
               setState(() {
                 podcastPageOpen = false;
-
               });
             },
           ),

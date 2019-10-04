@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:podtastic/SurfaceMenu/NowPlayingPage/seek_bar.dart';
 
@@ -62,7 +64,7 @@ class _NowPlayingDisplayState extends State<NowPlayingDisplay> {
                             Column(
                               children: <Widget>[
                                 Padding(
-                                  padding: const EdgeInsets.only(top: 8.0, left: 8.0, bottom: 25.0, right: 8.0),
+                                  padding: const EdgeInsets.only(top: 8.0, left: 8.0, bottom: 0.0, right: 8.0),
                                   child: Container(
                                     alignment: Alignment.center,
                                     width: double.maxFinite,
@@ -78,11 +80,15 @@ class _NowPlayingDisplayState extends State<NowPlayingDisplay> {
                                   color: Theme.of(context).primaryTextTheme.title.color,
                                   indent: 100.0,
                                   endIndent: 100.0,
+                                  height: max(25, MediaQuery.of(context).size.height / 22)
                                 ),
                                 Expanded(
                                   child: Padding(
-                                    padding: const EdgeInsets.only(left: 25.0, right: 25.0, bottom: 30.0, top: 25.0),
+                                    padding: const EdgeInsets.only(left: 25.0, right: 25.0, bottom: 0.0, top: 0.0),
                                     child: RichText(
+                                      overflow: TextOverflow.ellipsis,
+                                      maxLines: ((MediaQuery.of(context).size.height / 4)
+                                        ~/ Theme.of(context).primaryTextTheme.body1.fontSize),
                                       text: TextSpan(
                                         text: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Dolor sed viverra ipsum nunc aliquet bibendum enim. In massa tempor nec feugiat. Nunc aliquet bibendum enim facilisis gravida. Nisl nunc mi ipsum faucibus vitae aliquet nec ullamcorper. Amet luctus venenatis lectus magna fringilla. Volutpat maecenas volutpat blandit aliquam etiam erat velit scelerisque in. Egestas egestas fringilla phasellus faucibus scelerisque eleifend. Sagittis orci a scelerisque purus semper eget duis. Nulla pharetra diam sit amet nisl suscipit. Sed adipiscing",
                                         style: Theme.of(context).primaryTextTheme.body1
@@ -108,7 +114,7 @@ class _NowPlayingDisplayState extends State<NowPlayingDisplay> {
                         ),
                       ),
                       Container(
-                        height: MediaQuery.of(context).size.height/7,
+                        height: MediaQuery.of(context).size.height/7.5,
                         child: Padding(
                           padding: const EdgeInsets.only(left: 50.0, right: 50.0),
                           child: SeekBar(
