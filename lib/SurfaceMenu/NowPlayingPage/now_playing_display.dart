@@ -118,6 +118,7 @@ class _NowPlayingDisplayState extends State<NowPlayingDisplay> {
                         child: Padding(
                           padding: const EdgeInsets.only(left: 50.0, right: 50.0),
                           child: SeekBar(
+                            barWidth: MediaQuery.of(context).size.width - 100.0,
                             trackProgressPercent: 0.0,
                             onSeekRequested: (d){},
                           ),
