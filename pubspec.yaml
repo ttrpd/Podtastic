@@ -75,14 +75,14 @@ flutter:
     - family: AbrilFatface
       fonts:
         - asset: fonts/Abril_Fatface/AbrilFatface-Regular.ttf
-    - family: PlayfairDisplaySC
+    - family: PlayfairDisplay
       fonts:
-        - asset: fonts/Playfair_Display_SC/PlayfairDisplaySC-Black.ttf
-        - asset: fonts/Playfair_Display_SC/PlayfairDisplaySC-BlackItalic.ttf
-        - asset: fonts/Playfair_Display_SC/PlayfairDisplaySC-Bold.ttf
-        - asset: fonts/Playfair_Display_SC/PlayfairDisplaySC-BoldItalic.ttf
-        - asset: fonts/Playfair_Display_SC/PlayfairDisplaySC-Italic.ttf
-        - asset: fonts/Playfair_Display_SC/PlayfairDisplaySC-Regular.ttf
+        - asset: fonts/Playfair_Display/PlayfairDisplay-Black.ttf
+        - asset: fonts/Playfair_Display/PlayfairDisplay-BlackItalic.ttf
+        - asset: fonts/Playfair_Display/PlayfairDisplay-Bold.ttf
+        - asset: fonts/Playfair_Display/PlayfairDisplay-BoldItalic.ttf
+        - asset: fonts/Playfair_Display/PlayfairDisplay-Italic.ttf
+        - asset: fonts/Playfair_Display/PlayfairDisplay-Regular.ttf
     - family: BigShouldersDisplay
       fonts:
         - asset: fonts/Big_Shoulders_Display/BigShouldersDisplay-Black.ttf

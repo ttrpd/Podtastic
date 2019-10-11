@@ -52,10 +52,11 @@ class _PodcastMenuState extends State<PodcastMenu> {
                       child: RichText(
                         text: TextSpan(
                           text: 'Search',
-                          style: TextStyle(
-                            color: Theme.of(context).primaryColor,
-                            fontSize: 24,
-                          ),
+                          style: Theme.of(context).primaryTextTheme.title
+                            .copyWith(
+                              color: Theme.of(context).primaryColor,
+                              fontFamily: 'PlayFairDisplay',
+                            ),
                         ),
                       ),
                     ),

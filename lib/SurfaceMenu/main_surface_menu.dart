@@ -98,7 +98,8 @@ class _MainSurfaceMenuState extends State<MainSurfaceMenu> with TickerProviderSt
           Stack(
             children: <Widget>[
               SurfaceDrawer(
-                surfaceDrawerHeight: MediaQuery.of(context).size.height,
+                surfaceDrawerHeight: MediaQuery.of(context).size.height - 100.0,
+                initialDisplacement: 0.0,
                 slidePercent: (slidePercent<0.0)?0.0:slidePercent,
                 bottomPage: NowPlayingControls(),
                 elevation: 0.0,
@@ -131,50 +132,56 @@ class NowPlayingControls extends StatefulWidget {
 }
 
 class _NowPlayingControlsState extends State<NowPlayingControls> {
-  double dividerIndent = 100.0;
+
+  double iconSize = 30.0;
+
   @override
   Widget build(BuildContext context) {
-    dividerIndent = (MediaQuery.of(context).size.width/3.75);
     return Container(
       color: Theme.of(context).backgroundColor,
       child: Column(
         children: <Widget>[
           Container(
-            height: MediaQuery.of(context).size.height / 2,
+            height: (MediaQuery.of(context).size.height*0.5),
           ),
-          Expanded(child: buildPlayerControls(context)),
           Expanded(
-            child: Container(
-              color: Theme.of(context).scaffoldBackgroundColor,
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  Expanded(
-                    child: IconButton(
-                      icon: Icon(Icons.star_border),
-                      color: Theme.of(context).primaryColor,
-                      iconSize: 30.0,
-                      onPressed: (){},
-                    ),
+            child: Column(
+              children: <Widget>[
+                Expanded(child: buildPlayerControls(context)),
+                Container(
+                  color: Theme.of(context).scaffoldBackgroundColor,
+                  height: iconSize * 3,
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: <Widget>[
+                      Expanded(
+                        child: IconButton(
+                          icon: Icon(Icons.star_border),
+                          color: Theme.of(context).primaryColor,
+                          iconSize: iconSize,
+                          onPressed: (){},
+                        ),
+                      ),
+                      Expanded(
+                        child: IconButton(
+                          icon: Icon(Icons.launch),
+                          color: Theme.of(context).primaryColor,
+                          iconSize: iconSize,
+                          onPressed: (){},
+                        ),
+                      ),
+                      Expanded(
+                        child: IconButton(
+                          icon: Icon(Icons.menu),
+                          color: Theme.of(context).primaryColor,
+                          iconSize: iconSize,
+                          onPressed: (){},
+                        ),
+                      ),
+                    ],
                   ),
-                  Expanded(
-                    child: IconButton(
-                      icon: Icon(Icons.launch),
-                      color: Theme.of(context).primaryColor,
-                      iconSize: 30.0,
-                      onPressed: (){},
-                    ),
-                  ),
-                  Expanded(
-                    child: IconButton(
-                      icon: Icon(Icons.menu),
-                      color: Theme.of(context).primaryColor,
-                      iconSize: 30.0,
-                      onPressed: (){},
-                    ),
-                  ),
-                ],
-              ),
+                ),
+              ],
             ),
           ),
         ],
@@ -182,51 +189,48 @@ class _NowPlayingControlsState extends State<NowPlayingControls> {
     );
   }
 
-  Padding buildPlayerControls(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(top: 20.0),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: <Widget>[
-          Expanded(child: Container(),),
-          IconButton(
-            icon: Material(
-              borderRadius: BorderRadius.circular(30.0),
-              child: Icon(Icons.replay_30),
-              elevation: 30.0,
-              color: Colors.transparent,
-            ),
-            color: Theme.of(context).primaryColor,
-            iconSize: MediaQuery.of(context).size.width / 6.5,
-            onPressed: (){},
+  Widget buildPlayerControls(BuildContext context) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: <Widget>[
+        Expanded(child: Container(),),
+        IconButton(
+          icon: Material(
+            borderRadius: BorderRadius.circular(30.0),
+            child: Icon(Icons.replay_30),
+            elevation: 30.0,
+            color: Colors.transparent,
           ),
-          Expanded(child: Container(),),
-          IconButton(
-            icon: Material(
-              borderRadius: BorderRadius.circular(30.0),
-              child: Icon(Icons.play_circle_filled),
-              elevation: 30.0,
-              color: Colors.transparent,
-            ),
-            color: Theme.of(context).primaryColor,
-            iconSize: MediaQuery.of(context).size.width / 6,
-            onPressed: (){},
+          color: Theme.of(context).primaryColor,
+          iconSize: MediaQuery.of(context).size.width / 6.5,
+          onPressed: (){},
+        ),
+        Expanded(child: Container(),),
+        IconButton(
+          icon: Material(
+            borderRadius: BorderRadius.circular(30.0),
+            child: Icon(Icons.play_circle_filled),
+            elevation: 30.0,
+            color: Colors.transparent,
           ),
-          Expanded(child: Container(),),
-          IconButton(
-            icon: Material(
-              borderRadius: BorderRadius.circular(30.0),
-              child: Icon(Icons.forward_30),
-              elevation: 30.0,
-              color: Colors.transparent,
-            ),
-            color: Theme.of(context).primaryColor,
-            iconSize: MediaQuery.of(context).size.width / 6.5,
-            onPressed: (){},
+          color: Theme.of(context).primaryColor,
+          iconSize: MediaQuery.of(context).size.width / 6,
+          onPressed: (){},
+        ),
+        Expanded(child: Container(),),
+        IconButton(
+          icon: Material(
+            borderRadius: BorderRadius.circular(30.0),
+            child: Icon(Icons.forward_30),
+            elevation: 30.0,
+            color: Colors.transparent,
           ),
-          Expanded(child: Container(),),
-        ],
-      ),
+          color: Theme.of(context).primaryColor,
+          iconSize: MediaQuery.of(context).size.width / 6.5,
+          onPressed: (){},
+        ),
+        Expanded(child: Container(),),
+      ],
     );
   }
 }

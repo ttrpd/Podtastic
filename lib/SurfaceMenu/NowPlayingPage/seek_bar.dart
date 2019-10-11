@@ -51,7 +51,6 @@ class SeekBarState extends State<SeekBar> {
       },
       onHorizontalDragEnd: (DragEndDetails details)
       {
-
         if(widget.onSeekRequested != null) {
           widget.onSeekRequested(_seekProgressPercent);
         }
