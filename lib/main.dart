@@ -1,14 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:podtastic/SurfaceMenu/main_surface_menu.dart';
 import 'package:podtastic/podcast_db.dart';
+import 'package:podtastic/podcast_provider.dart';
 
-void main() => runApp(MyApp());
+void main() 
+{
+  WidgetsFlutterBinding.ensureInitialized();
+  runApp(MyApp());
+}
 
 class MyApp extends StatelessWidget {
-  // This widget is the root of your application.
+
   @override
   Widget build(BuildContext context) {
-    // SimplePermissions.requestPermission(Permission.ReadExternalStorage);
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Podtastic',
@@ -28,14 +32,15 @@ class MyApp extends StatelessWidget {
             color: Colors.black,
             fontSize: 22.0,
             fontFamily: 'Rubik',
-            
           )
         ),
       ),
       
-      home: PodcastDB(child: MainSurfaceMenu()),
+      home: PodcastDB(
+        child: PodcastProvider(
+          child: MainSurfaceMenu()
+        ),
+      ),
     );
   }
-
 }
-

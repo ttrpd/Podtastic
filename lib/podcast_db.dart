@@ -39,7 +39,7 @@ class PodcastDB extends InheritedWidget
           "podcastId INTEGER,"
           "link TEXT,"
           "name TEXT,"
-          "description TEXT,"
+          "epDesc TEXT,"
           "subtitle TEXT,"
           "number INTEGER,"
           "played BIT,"
@@ -86,7 +86,7 @@ class PodcastDB extends InheritedWidget
           "podcastId INTEGER,"
           "link TEXT,"
           "name TEXT,"
-          "description TEXT,"
+          "epDesc TEXT,"
           "subtitle TEXT,"
           "number INTEGER,"
           "played BIT,"
@@ -134,7 +134,7 @@ class PodcastDB extends InheritedWidget
             "podcastId,"
             "link,"
             "name,"
-            "description,"
+            "epDesc,"
             "subtitle,"
             "number,"
             "played,"
@@ -207,7 +207,7 @@ class PodcastDB extends InheritedWidget
         )
       );
     }
-    return pods.first ?? null;
+    return pods.first;
   }
 
   Future<List<Podcast>> getPodcasts(String title) async
@@ -288,7 +288,7 @@ class PodcastDB extends InheritedWidget
         Episode(
           row["link"],
           row["name"],
-          row["description"],
+          row["epDesc"],
           row["subtitle"],
           row["number"],
           false,

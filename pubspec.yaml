@@ -23,15 +23,11 @@ dependencies:
 
   html: ^0.13.3+3
 
-  path_provider: ^0.4.1
-
-  # audioplayers: ^0.7.8
+  audioplayers: ^0.13.2
 
   flutter_html: ^0.8.2
 
   xml: ^3.4.0
-
-  # simple_permissions: "^0.1.2"
 
   webfeed: ^0.4.2
 

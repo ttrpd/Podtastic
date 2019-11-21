@@ -53,19 +53,20 @@ class _SearchPageState extends State<SearchPage> with TickerProviderStateMixin {
     Response resp = await client.get(pod.feedLink);
     var podXML = RssFeed.parse(resp.body);
 
-    print(podXML.items.first.enclosure.url);
+    print(resp.body);
 
     List<Episode> episodes = List<Episode>();
     if(podXML.items.isNotEmpty)
     {
       for(RssItem item in podXML.items)
       {
+        print(item.dc.description);
         episodes.add(
           Episode(
-            item.enclosure.url,
+            item?.enclosure?.url ?? item.link,
             item.title,
             item.description,
-            '',
+            item.comments ?? "",
             0,
             false,
             Duration(minutes: 10),
@@ -85,7 +86,7 @@ class _SearchPageState extends State<SearchPage> with TickerProviderStateMixin {
         episodes
       );
     });
-    print(selectedPodcast.title);
+    print(selectedPodcast.episodes.first.description);
     return selectedPodcast;
   }
 

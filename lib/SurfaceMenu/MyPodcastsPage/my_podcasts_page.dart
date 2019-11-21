@@ -51,9 +51,8 @@ class _MyPodcastsPageState extends State<MyPodcastsPage> with TickerProviderStat
                             });
                             print('opening podcast');
                             print(myPodcasts.elementAt(index).title);
-                            print(myPodcasts.elementAt(index).artLink);
-                            print(myPodcasts.elementAt(index).thumbnailLink);
-                            print(myPodcasts.elementAt(index).episodes.length);
+                            print(myPodcasts.elementAt(index).episodes.first.description);
+                            
                           },
                           child: Container(
                             width: double.maxFinite,

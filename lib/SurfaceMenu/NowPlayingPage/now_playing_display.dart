@@ -2,6 +2,7 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:podtastic/SurfaceMenu/NowPlayingPage/seek_bar.dart';
+import 'package:podtastic/podcast_provider.dart';
 
 class NowPlayingDisplay extends StatefulWidget {
   const NowPlayingDisplay({
@@ -64,13 +65,14 @@ class _NowPlayingDisplayState extends State<NowPlayingDisplay> {
                             Column(
                               children: <Widget>[
                                 Padding(
-                                  padding: const EdgeInsets.only(top: 8.0, left: 8.0, bottom: 0.0, right: 8.0),
+                                  padding: const EdgeInsets.only(top: 8.0, left: 16.0, bottom: 0.0, right: 16.0),
                                   child: Container(
                                     alignment: Alignment.center,
                                     width: double.maxFinite,
                                     child: RichText(
+                                      textAlign: TextAlign.center,
                                       text: TextSpan(
-                                        text: "Test Title",
+                                        text: PodcastProvider.of(context).playingEpisode?.name ?? "",
                                         style: Theme.of(context).primaryTextTheme.title
                                       ),
                                     ),
@@ -90,7 +92,7 @@ class _NowPlayingDisplayState extends State<NowPlayingDisplay> {
                                       maxLines: ((MediaQuery.of(context).size.height / 4)
                                         ~/ Theme.of(context).primaryTextTheme.body1.fontSize),
                                       text: TextSpan(
-                                        text: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Dolor sed viverra ipsum nunc aliquet bibendum enim. In massa tempor nec feugiat. Nunc aliquet bibendum enim facilisis gravida. Nisl nunc mi ipsum faucibus vitae aliquet nec ullamcorper. Amet luctus venenatis lectus magna fringilla. Volutpat maecenas volutpat blandit aliquam etiam erat velit scelerisque in. Egestas egestas fringilla phasellus faucibus scelerisque eleifend. Sagittis orci a scelerisque purus semper eget duis. Nulla pharetra diam sit amet nisl suscipit. Sed adipiscing",
+                                        text: PodcastProvider.of(context).playingEpisode?.description ?? "",
                                         style: Theme.of(context).primaryTextTheme.body1
                                       ),
                                       textAlign: TextAlign.center,
