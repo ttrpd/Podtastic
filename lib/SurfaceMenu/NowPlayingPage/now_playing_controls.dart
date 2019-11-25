@@ -52,8 +52,7 @@ class _NowPlayingControlsState extends State<NowPlayingControls> {
           iconSize: MediaQuery.of(context).size.width / 6.5,
           onPressed: () {
             setState(() async {
-              int pos = await PodcastProvider.of(context).audioPlayer.getCurrentPosition();
-              PodcastProvider.of(context).audioPlayer.seek(Duration(milliseconds: pos-30000));
+              PodcastProvider.of(context).skip(Duration(seconds: -30));
             });
           },
         ),
@@ -88,9 +87,8 @@ class _NowPlayingControlsState extends State<NowPlayingControls> {
           color: Theme.of(context).primaryColor,
           iconSize: MediaQuery.of(context).size.width / 6.5,
           onPressed: () {
-            setState(() async {
-              int pos = await PodcastProvider.of(context).audioPlayer.getCurrentPosition();
-              PodcastProvider.of(context).audioPlayer.seek(Duration(milliseconds: pos+30000));
+            setState(() {
+              PodcastProvider.of(context).skip(Duration(seconds: 30));
             });
           },
         ),

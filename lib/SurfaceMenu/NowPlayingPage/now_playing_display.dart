@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
 import 'package:podtastic/SurfaceMenu/NowPlayingPage/seek_bar.dart';
 import 'package:podtastic/podcast_provider.dart';
@@ -16,6 +17,7 @@ class NowPlayingDisplay extends StatefulWidget {
 }
 
 class _NowPlayingDisplayState extends State<NowPlayingDisplay> {
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -119,10 +121,23 @@ class _NowPlayingDisplayState extends State<NowPlayingDisplay> {
                         height: MediaQuery.of(context).size.height/7.5,
                         child: Padding(
                           padding: const EdgeInsets.only(left: 50.0, right: 50.0),
-                          child: SeekBar(
-                            barWidth: MediaQuery.of(context).size.width - 100.0,
-                            trackProgressPercent: 0.0,
-                            onSeekRequested: (d){},
+                          child: StreamBuilder(
+                            stream: PodcastProvider.of(context).audioPlayer.onAudioPositionChanged,
+                            builder: (BuildContext context, AsyncSnapshot<Duration> snapshot) {
+                              return SeekBar(
+                                barWidth: MediaQuery.of(context).size.width - 100.0,
+                                trackProgressPercent: (snapshot.data?.inMilliseconds ?? 0)
+                                  / PodcastProvider.of(context).endTime.inMilliseconds,
+                                onSeekRequested: (double seekPercent) {
+                                  setState(() {
+                                    final seekMils = (PodcastProvider.of(context).endTime.inMilliseconds.toDouble() * seekPercent).round();
+                                    PodcastProvider.of(context).audioPlayer.seek(Duration(milliseconds: seekMils));
+                                    PodcastProvider.of(context).trackProgressPercent = seekMils.toDouble() / PodcastProvider.of(context).endTime.inMilliseconds.toDouble();
+                                    PodcastProvider.of(context).currentTime = Duration(milliseconds: seekMils);
+                                  });
+                                },
+                              );
+                            }
                           ),
                         ),
                       ),

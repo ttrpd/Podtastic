@@ -85,7 +85,6 @@ class _MainSurfaceMenuState extends State<MainSurfaceMenu> with TickerProviderSt
 
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
       backgroundColor: Theme.of(context).backgroundColor,
       body: Stack(
