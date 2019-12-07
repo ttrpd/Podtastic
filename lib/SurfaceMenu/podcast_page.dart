@@ -120,11 +120,10 @@ class _PodcastPageState extends State<PodcastPage> {
                         itemBuilder: (BuildContext context, int index) {
                           return InkWell(
                             onTap: () {
-                              setState(() {
-                                PodcastProvider.of(context).setEpisode(
-                                  widget.selectedPodcast.episodes.elementAt(index)
-                                );
-                              });
+                              PodcastProvider.of(context).setEpisode(
+                                widget.selectedPodcast.episodes.elementAt(index)
+                              );
+                              setState((){});
                             },
                             child: Container(
                               width: double.maxFinite,

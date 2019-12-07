@@ -9,7 +9,7 @@ class PodcastProvider extends InheritedWidget
   Duration currentTime = Duration(milliseconds: 0);
   Duration endTime = Duration(milliseconds: 1);
   double trackProgressPercent = 0.0;
-  AudioPlayer audioPlayer = AudioPlayer();
+  AudioPlayer audioPlayer = AudioPlayer()..mode=PlayerMode.MEDIA_PLAYER;
 
   PodcastProvider({
     Key key,
@@ -22,9 +22,9 @@ class PodcastProvider extends InheritedWidget
     ep.link = ep.link.replaceRange(0, ep.link.indexOf(':'), "https");
     playingEpisode = ep;
     audioPlayer.setUrl(ep.link);
+    endTime = Duration(milliseconds: await audioPlayer.getDuration());
     audioPlayer.resume();
     playing = true;
-    endTime = Duration(milliseconds: await audioPlayer.getDuration());
   }
 
   void skip(Duration skipAmount) async

@@ -23,7 +23,7 @@ dependencies:
 
   html: ^0.13.3+3
 
-  audioplayers: ^0.13.2
+  audioplayers: 0.13.2
 
   flutter_html: ^0.8.2
 
