@@ -22,7 +22,8 @@ class PodcastProvider extends InheritedWidget
     ep.link = ep.link.replaceRange(0, ep.link.indexOf(':'), "https");
     playingEpisode = ep;
     audioPlayer.setUrl(ep.link);
-    endTime = Duration(milliseconds: await audioPlayer.getDuration());
+    audioPlayer.onDurationChanged.listen((d) => endTime = d);
+    audioPlayer.onAudioPositionChanged.listen((p) => currentTime = p);
     audioPlayer.resume();
     playing = true;
   }
@@ -41,6 +42,11 @@ class PodcastProvider extends InheritedWidget
       audioPlayer.resume();
 
     playing = !playing;
+  }
+
+  Duration getTimeRemaining()
+  {
+    return Duration(milliseconds: endTime.inMilliseconds - currentTime.inMilliseconds);
   }
 
   @override

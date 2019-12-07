@@ -18,6 +18,13 @@ class NowPlayingDisplay extends StatefulWidget {
 
 class _NowPlayingDisplayState extends State<NowPlayingDisplay> {
 
+  String trimDurationString(Duration dur)
+  {
+    List<String> units = dur.toString().split('.');
+    units.removeLast();
+    return units.join('.');
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -119,26 +126,56 @@ class _NowPlayingDisplayState extends State<NowPlayingDisplay> {
                       ),
                       Container(
                         height: MediaQuery.of(context).size.height/7.5,
-                        child: Padding(
-                          padding: const EdgeInsets.only(left: 50.0, right: 50.0),
-                          child: StreamBuilder(
-                            stream: PodcastProvider.of(context).audioPlayer.onAudioPositionChanged,
-                            builder: (BuildContext context, AsyncSnapshot<Duration> snapshot) {
-                              return SeekBar(
-                                barWidth: MediaQuery.of(context).size.width - 100.0,
-                                trackProgressPercent: (snapshot.data?.inMilliseconds ?? 0)
-                                  / PodcastProvider.of(context).endTime.inMilliseconds,
-                                onSeekRequested: (double seekPercent) {
-                                  setState(() {
-                                    final seekMils = (PodcastProvider.of(context).endTime.inMilliseconds.toDouble() * seekPercent).round();
-                                    PodcastProvider.of(context).audioPlayer.seek(Duration(milliseconds: seekMils));
-                                    PodcastProvider.of(context).trackProgressPercent = seekMils.toDouble() / PodcastProvider.of(context).endTime.inMilliseconds.toDouble();
-                                    PodcastProvider.of(context).currentTime = Duration(milliseconds: seekMils);
-                                  });
-                                },
-                              );
-                            }
-                          ),
+                        width: MediaQuery.of(context).size.width,
+                        alignment: Alignment.center,
+                        child: StreamBuilder(
+                          stream: PodcastProvider.of(context).audioPlayer.onAudioPositionChanged,
+                          builder: (BuildContext context, AsyncSnapshot<Duration> snapshot) {
+
+                            return Row(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: <Widget>[
+                                Expanded(
+                                  child: RichText(
+                                    overflow: TextOverflow.clip,
+                                    maxLines: 1,
+                                    text: TextSpan(
+                                      text: trimDurationString(PodcastProvider.of(context).currentTime),
+                                      style: Theme.of(context).primaryTextTheme.display1
+                                    ),
+                                    textAlign: TextAlign.center,
+                                  ),
+                                ),
+                                Container(
+                                  width: MediaQuery.of(context).size.width*0.6,
+                                  child: SeekBar(
+                                    barWidth: MediaQuery.of(context).size.width*0.6,
+                                    trackProgressPercent: (snapshot.data?.inMilliseconds ?? 0)
+                                      / PodcastProvider.of(context).endTime.inMilliseconds,
+                                    onSeekRequested: (double seekPercent) {
+                                      setState(() {
+                                        final seekMils = (PodcastProvider.of(context).endTime.inMilliseconds.toDouble() * seekPercent).round();
+                                        PodcastProvider.of(context).audioPlayer.seek(Duration(milliseconds: seekMils));
+                                        PodcastProvider.of(context).trackProgressPercent = seekMils.toDouble() / PodcastProvider.of(context).endTime.inMilliseconds.toDouble();
+                                        PodcastProvider.of(context).currentTime = Duration(milliseconds: seekMils);
+                                      });
+                                    },
+                                  ),
+                                ),
+                                Expanded(
+                                  child: RichText(
+                                    overflow: TextOverflow.clip,
+                                    maxLines: 1,
+                                    text: TextSpan(
+                                      text: trimDurationString(PodcastProvider.of(context).getTimeRemaining()),
+                                      style: Theme.of(context).primaryTextTheme.display1
+                                    ),
+                                    textAlign: TextAlign.center,
+                                  ),
+                                ),
+                              ],
+                            );
+                          }
                         ),
                       ),
                     ],
