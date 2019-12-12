@@ -5,7 +5,6 @@ import 'package:podtastic/SurfaceMenu/NowPlayingPage/now_playing_display.dart';
 import 'package:podtastic/SurfaceMenu/SearchPage/search_page.dart';
 import 'package:podtastic/SurfaceMenu/podcast_menu.dart';
 import 'package:podtastic/SurfaceMenu/surface_drawer.dart';
-import 'package:podtastic/podcast_provider.dart';
 
 class MainSurfaceMenu extends StatefulWidget {
 

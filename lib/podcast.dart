@@ -14,6 +14,8 @@ class Podcast
   String description = '';
   List<Episode> episodes = List<Episode>();
 
+  Podcast([this.title, this.feedLink, this.artistName, this.description, this.artLink, this.thumbnailLink, this.episodes]){}
+
   operator ==(Object podcast)
   {
     return ( podcast is Podcast
@@ -62,7 +64,6 @@ class Podcast
 
   }
 
-  Podcast([this.title, this.feedLink, this.artistName, this.description, this.artLink, this.thumbnailLink, this.episodes]){}
 
 }
 

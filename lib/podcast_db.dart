@@ -190,8 +190,6 @@ class PodcastDB extends InheritedWidget
       );
     });
 
-    print(eps);
-
     List<Podcast> pods = new List<Podcast>();
 
     for(Map<String, Object> row in eps)
@@ -220,8 +218,6 @@ class PodcastDB extends InheritedWidget
       );
     });
 
-    print(eps);
-
     List<Podcast> pods = new List<Podcast>();
 
     for(Map<String, Object> row in eps)
@@ -246,8 +242,6 @@ class PodcastDB extends InheritedWidget
     List<Map<String, Object>> eps = await db.transaction((txn) async {
       return txn.rawQuery("SELECT * FROM Podcasts");
     });
-
-    print(eps);
 
     List<Podcast> pods = new List<Podcast>();
 
@@ -281,7 +275,7 @@ class PodcastDB extends InheritedWidget
     });
 
     List<Episode> episodes = new List<Episode>();
-    print(eps.length);
+
     for(Map<String, Object> row in eps)
     {
       episodes.add(
