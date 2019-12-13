@@ -4,6 +4,7 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart';
 import 'package:podtastic/SurfaceMenu/podcast_page.dart';
+import 'package:podtastic/SurfaceMenu/MyPodcastsPage/podcast_sliver.dart';
 import 'package:podtastic/podcast.dart';
 import 'package:http/http.dart' as http;
 import 'package:podtastic/podcast_db.dart';
@@ -53,19 +54,20 @@ class _SearchPageState extends State<SearchPage> with TickerProviderStateMixin {
     Response resp = await client.get(pod.feedLink);
     var podXML = RssFeed.parse(resp.body);
 
-    print(podXML.items.first.enclosure.url);
+    print(resp.body);
 
     List<Episode> episodes = List<Episode>();
     if(podXML.items.isNotEmpty)
     {
       for(RssItem item in podXML.items)
       {
+        print(item.dc.description);
         episodes.add(
           Episode(
-            item.enclosure.url,
+            item?.enclosure?.url ?? item.link,
             item.title,
             item.description,
-            '',
+            item.comments ?? "",
             0,
             false,
             Duration(minutes: 10),
@@ -85,7 +87,7 @@ class _SearchPageState extends State<SearchPage> with TickerProviderStateMixin {
         episodes
       );
     });
-    print(selectedPodcast.title);
+    print(selectedPodcast.episodes.first.description);
     return selectedPodcast;
   }
 
@@ -127,8 +129,8 @@ class _SearchPageState extends State<SearchPage> with TickerProviderStateMixin {
                   physics: BouncingScrollPhysics(),
                   itemCount: podcastList.length,
                   itemBuilder: (BuildContext context, int index) {
-                    return InkWell(
-                      highlightColor: Theme.of(context).primaryColorDark,
+                    return PodcastSliver(
+                      selectedPodcast: podcastList.elementAt(index),
                       onTap: () async {// open podcast
                         FocusScope.of(context).requestFocus(FocusNode());
                         fp = getPodcastData(podcastList.elementAt(index));
@@ -140,48 +142,6 @@ class _SearchPageState extends State<SearchPage> with TickerProviderStateMixin {
                           podcastPageOpen = true;
                         });
                       },
-                      child: Container(
-                        width: double.maxFinite,
-                        height: 90.0,
-                        alignment: Alignment.centerLeft,
-                        child: Row(
-                          children: <Widget>[
-                            Padding(
-                              padding: const EdgeInsets.all(10.0),
-                              child: ClipRRect(
-                                borderRadius: BorderRadius.circular(5.0),
-                                child: FutureBuilder(
-                                  builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot)
-                                  {
-                                    return Container(
-                                      width: 60.0,
-                                      height: 60.0,
-                                      decoration: BoxDecoration(
-                                        image: DecorationImage(
-                                          image: NetworkImage(podcastList.elementAt(index).thumbnailLink),
-                                        )
-                                      ),
-                                    );
-                                  },
-                                ),
-                              ),
-                            ),
-                            Flexible(
-                              child: Padding(
-                                padding: const EdgeInsets.all(10.0),
-                                child: RichText(
-                                  text: TextSpan(
-                                    style: TextStyle(
-                                      color: Colors.black
-                                    ),
-                                    text: podcastList.elementAt(index).title,
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
                     );
                   },
 
@@ -204,4 +164,3 @@ class _SearchPageState extends State<SearchPage> with TickerProviderStateMixin {
     );
   }
 }
-

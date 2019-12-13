@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:podtastic/podcast.dart';
+import 'package:podtastic/podcast_provider.dart';
 
 class PodcastPage extends StatefulWidget {
   const PodcastPage({
@@ -117,15 +118,23 @@ class _PodcastPageState extends State<PodcastPage> {
                         physics: BouncingScrollPhysics(),
                         itemCount: widget.selectedPodcast.episodes.length,
                         itemBuilder: (BuildContext context, int index) {
-                          return Container(
-                            width: double.maxFinite,
-                            height: 100.0,
-                            child: RichText(
-                              text: TextSpan(
-                                text: widget.selectedPodcast.episodes.elementAt(index).name,
-                                style: TextStyle(
-                                  color: Colors.black
-                                )
+                          return InkWell(
+                            onTap: () {
+                              PodcastProvider.of(context).setEpisode(
+                                widget.selectedPodcast.episodes.elementAt(index)
+                              );
+                              setState((){});
+                            },
+                            child: Container(
+                              width: double.maxFinite,
+                              height: 100.0,
+                              child: RichText(
+                                text: TextSpan(
+                                  text: widget.selectedPodcast.episodes.elementAt(index).name,
+                                  style: TextStyle(
+                                    color: Colors.black
+                                  )
+                                ),
                               ),
                             ),
                           );

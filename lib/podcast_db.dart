@@ -1,10 +1,12 @@
 import 'dart:async';
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/widgets.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:podtastic/podcast.dart';
 import 'package:sqflite/sqflite.dart';
+import 'package:http/http.dart' as http;
 
 class PodcastDB extends InheritedWidget
 {
@@ -27,6 +29,7 @@ class PodcastDB extends InheritedWidget
           "externalID INTEGER,"
           "title TEXT,"
           "artLink TEXT,"
+          "art TEXT,"
           "thumbnailLink TEXT,"
           "feedLink TEXT,"
           "artistName TEXT,"
@@ -39,7 +42,7 @@ class PodcastDB extends InheritedWidget
           "podcastId INTEGER,"
           "link TEXT,"
           "name TEXT,"
-          "description TEXT,"
+          "epDesc TEXT,"
           "subtitle TEXT,"
           "number INTEGER,"
           "played BIT,"
@@ -74,6 +77,7 @@ class PodcastDB extends InheritedWidget
           "externalID INTEGER,"
           "title TEXT,"
           "artLink TEXT,"
+          "art TEXT,"
           "thumbnailLink TEXT,"
           "feedLink TEXT,"
           "artistName TEXT,"
@@ -86,7 +90,7 @@ class PodcastDB extends InheritedWidget
           "podcastId INTEGER,"
           "link TEXT,"
           "name TEXT,"
-          "description TEXT,"
+          "epDesc TEXT,"
           "subtitle TEXT,"
           "number INTEGER,"
           "played BIT,"
@@ -105,6 +109,9 @@ class PodcastDB extends InheritedWidget
     List<Map<String, dynamic>> podcastMatches = await db.transaction((txn) async {
       return txn.rawQuery("SELECT id FROM Podcasts WHERE Podcasts.title = "+sqlSanitize(podcast.title));
     });
+
+    String artStr = base64Encode((await http.get(podcast.artLink)).bodyBytes);
+
     if(podcastMatches.isEmpty)
     {
       int podcastId = -1;
@@ -113,6 +120,7 @@ class PodcastDB extends InheritedWidget
           "INSERT INTO Podcasts ("
           "title,"
           "artLink,"
+          "art,"
           "thumbnailLink,"
           "feedLink,"
           "artistName,"
@@ -120,6 +128,7 @@ class PodcastDB extends InheritedWidget
           ") VALUES ("
           +sqlSanitize(podcast.title, delimiter: ",")
           +sqlSanitize(podcast.artLink, delimiter: ",")
+          +sqlSanitize(artStr, delimiter: ",")
           +sqlSanitize(podcast.thumbnailLink, delimiter: ",")
           +sqlSanitize(podcast.feedLink, delimiter: ",")
           +sqlSanitize(podcast.artistName, delimiter: ",")
@@ -134,7 +143,7 @@ class PodcastDB extends InheritedWidget
             "podcastId,"
             "link,"
             "name,"
-            "description,"
+            "epDesc,"
             "subtitle,"
             "number,"
             "played,"
@@ -190,8 +199,6 @@ class PodcastDB extends InheritedWidget
       );
     });
 
-    print(eps);
-
     List<Podcast> pods = new List<Podcast>();
 
     for(Map<String, Object> row in eps)
@@ -207,7 +214,28 @@ class PodcastDB extends InheritedWidget
         )
       );
     }
-    return pods.first ?? null;
+    return pods.first;
+  }
+
+  Future<ImageProvider> getPodcastArt(String title) async
+  {
+    Database db = await _db;
+    List<Map<String, Object>> eps = await db.transaction((txn) async {
+      return txn.rawQuery(
+        "SELECT * FROM Podcasts "
+        "WHERE title = "+sqlSanitize(title)
+      );
+    });
+
+    List<ImageProvider> art = new List<ImageProvider>();
+
+    for(Map<String, Object> row in eps)
+    {
+      art.add(
+        Image.memory(base64Decode(row["art"] ?? "")).image
+      );
+    }
+    return art.first;
   }
 
   Future<List<Podcast>> getPodcasts(String title) async
@@ -219,8 +247,6 @@ class PodcastDB extends InheritedWidget
         "WHERE title = "+sqlSanitize(title)
       );
     });
-
-    print(eps);
 
     List<Podcast> pods = new List<Podcast>();
 
@@ -246,8 +272,6 @@ class PodcastDB extends InheritedWidget
     List<Map<String, Object>> eps = await db.transaction((txn) async {
       return txn.rawQuery("SELECT * FROM Podcasts");
     });
-
-    print(eps);
 
     List<Podcast> pods = new List<Podcast>();
 
@@ -281,14 +305,14 @@ class PodcastDB extends InheritedWidget
     });
 
     List<Episode> episodes = new List<Episode>();
-    print(eps.length);
+
     for(Map<String, Object> row in eps)
     {
       episodes.add(
         Episode(
           row["link"],
           row["name"],
-          row["description"],
+          row["epDesc"],
           row["subtitle"],
           row["number"],
           false,
