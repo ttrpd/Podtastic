@@ -4,10 +4,12 @@ import 'package:podtastic/SurfaceMenu/NowPlayingPage/progress_bar.dart';
 class SeekBar extends StatefulWidget
 {
   final double trackProgressPercent;
+  final double barWidth;
   final Function(double) onSeekRequested;
 
   SeekBar({
     Key key,
+    @required this.barWidth,
     this.trackProgressPercent = 0.0,
     this.onSeekRequested,
   }) : super(key: key);
@@ -31,7 +33,7 @@ class SeekBarState extends State<SeekBar> {
       onHorizontalDragStart: (DragStartDetails details)
       {
         setState(() {
-          _seekProgressPercent = (details.globalPosition.dx) / MediaQuery.of(context).size.width;
+          _seekProgressPercent = (details.localPosition.dx) / widget.barWidth;
           _thumbHeight *= 2.0;
           _thumbWidth *= 2.0;
           _seeking = true;
@@ -40,8 +42,8 @@ class SeekBarState extends State<SeekBar> {
       onHorizontalDragUpdate: (DragUpdateDetails details)
       {
         setState(() {
-          if(details.globalPosition.dx <= MediaQuery.of(context).size.width)
-            _seekProgressPercent = (details.globalPosition.dx) / MediaQuery.of(context).size.width;
+          if(details.localPosition.dx <= widget.barWidth)
+            _seekProgressPercent = (details.localPosition.dx) / widget.barWidth;
           else
             _seekProgressPercent = 1.0;
           
@@ -49,7 +51,6 @@ class SeekBarState extends State<SeekBar> {
       },
       onHorizontalDragEnd: (DragEndDetails details)
       {
-
         if(widget.onSeekRequested != null) {
           widget.onSeekRequested(_seekProgressPercent);
         }

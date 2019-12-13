@@ -1,11 +1,4 @@
-import 'dart:convert';
 import 'dart:math';
-
-import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
-import 'package:html/parser.dart' show parse;
-import 'package:html/dom.dart' as dom;
-import 'package:xml/xml.dart' as xml;
 import 'package:xml/xml.dart';
 
 class Podcast
@@ -21,8 +14,10 @@ class Podcast
   String description = '';
   List<Episode> episodes = List<Episode>();
 
+  Podcast([this.title, this.feedLink, this.artistName, this.description, this.artLink, this.thumbnailLink, this.episodes]){}
+
   operator ==(Object podcast)
-  {//TODO: change hashcode
+  {
     return ( podcast is Podcast
       && this.title == podcast.title
       && this.artLink == podcast.artLink
@@ -69,7 +64,6 @@ class Podcast
 
   }
 
-  Podcast([this.title, this.feedLink, this.artistName, this.description, this.artLink, this.thumbnailLink, this.episodes]){}
 
 }
 
@@ -81,8 +75,8 @@ class Episode
   String subtitle;
   int number;
   bool played = false;
-  Duration duration;
   String released;
+  Duration duration;
 
   Episode(
     this.link,

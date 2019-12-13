@@ -26,6 +26,8 @@ class PodcastMenu extends StatefulWidget {
 
 class _PodcastMenuState extends State<PodcastMenu> {
 
+  String menuTitle = "Search";
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -35,10 +37,12 @@ class _PodcastMenuState extends State<PodcastMenu> {
             Padding(
               padding: const EdgeInsets.only(top: 7.0),
               child: Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
                 children: <Widget>[
-                  Expanded(
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
                     child: Container(
-                      alignment: Alignment.centerLeft,
+                      alignment: Alignment.center,
                       child: IconButton(
                         icon: Icon(Icons.menu, color: Theme.of(context).primaryColor,),
                         color: Colors.transparent,
@@ -48,30 +52,31 @@ class _PodcastMenuState extends State<PodcastMenu> {
                   ),
                   Expanded(
                     child: Container(
+                      width: MediaQuery.of(context).size.width * 0.75,
                       alignment: Alignment.center,
                       child: RichText(
+                        maxLines: 1,
                         text: TextSpan(
-                          text: 'Search',
-                          style: TextStyle(
-                            color: Theme.of(context).primaryColor,
-                            fontSize: 24,
-                          ),
+                          text: menuTitle,
+                          style: Theme.of(context).primaryTextTheme.title
+                            .copyWith(
+                              color: Theme.of(context).primaryColor,
+                              fontFamily: 'PlayFairDisplay',
+                            ),
                         ),
                       ),
                     ),
                   ),
-                  Expanded(
-                    child: Container(
-                      alignment: Alignment.centerRight,
-                      child: Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: IconButton(
-                          icon: Icon(Icons.headset, color: Theme.of(context).primaryColor,), 
-                          color: Colors.transparent,
-                          onPressed: widget.onNowPlayingTap
-                        ),
-                      )
-                    ),
+                  Container(
+                    alignment: Alignment.center,
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: IconButton(
+                        icon: Icon(Icons.headset, color: Theme.of(context).primaryColor,), 
+                        color: Colors.transparent,
+                        onPressed: widget.onNowPlayingTap
+                      ),
+                    )
                   ),
                 ],
               ),
@@ -88,13 +93,20 @@ class _PodcastMenuState extends State<PodcastMenu> {
                     onPressed: (){
                       widget.setSurfaceDrawerPage(SearchPage());
                       widget.onMenuTap();
+                      setState(() {
+                        menuTitle = 'Search';
+                      });
                     },
                   ),
                   MenuItem(
                     text: 'Downloads',
                     enabled: false,
                     selected: false,
-                    onPressed: (){},
+                    onPressed: () {
+                      setState(() {
+                        menuTitle = 'Downloads';
+                      });
+                    },
                   ),
                   MenuItem(
                     text: 'My Podcasts',
@@ -103,13 +115,20 @@ class _PodcastMenuState extends State<PodcastMenu> {
                     onPressed: (){
                       widget.setSurfaceDrawerPage(MyPodcastsPage());
                       widget.onMenuTap();
+                      setState(() {
+                        menuTitle = 'My Podcasts';
+                      });
                     },
                   ),
                   MenuItem(
                     text: 'Settings',
                     enabled: false,
                     selected: false,
-                    onPressed: (){},
+                    onPressed: () {
+                      setState(() {
+                        menuTitle = 'Settings';
+                      });
+                    },
                   ),
                   Container(//for spacing purposes
                     height: 100.0,
