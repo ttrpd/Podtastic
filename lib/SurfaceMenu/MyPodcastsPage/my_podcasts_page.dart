@@ -15,7 +15,7 @@ class MyPodcastsPage extends StatefulWidget {
 }
 
 class _MyPodcastsPageState extends State<MyPodcastsPage> with TickerProviderStateMixin {
-  
+
   bool podcastPageOpen = false;
   Future<Podcast> fp;
   Podcast selectedPodcast = Podcast();
