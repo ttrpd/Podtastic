@@ -8,7 +8,10 @@ import 'package:podtastic/podcast_db.dart';
 class MyPodcastsPage extends StatefulWidget {
   const MyPodcastsPage({
     Key key,
+    @required this.onNowPlayTap,
   }) : super(key: key);
+
+  final Function() onNowPlayTap;
 
   @override
   _MyPodcastsPageState createState() => _MyPodcastsPageState();
@@ -51,8 +54,6 @@ class _MyPodcastsPageState extends State<MyPodcastsPage> with TickerProviderStat
                             });
                             print('opening podcast');
                             print(myPodcasts.elementAt(index).title);
-                            print(myPodcasts.elementAt(index).episodes.first.description);
-                            
                           },
                           child: Container(
                             width: double.maxFinite,
@@ -108,6 +109,7 @@ class _MyPodcastsPageState extends State<MyPodcastsPage> with TickerProviderStat
                 podcastPageOpen = false;
               });
             },
+            onNowPlayTap: widget.onNowPlayTap,
           ),
         ],
       ),

@@ -9,12 +9,14 @@ class PodcastPage extends StatefulWidget {
     @required this.fp,
     @required this.selectedPodcast,
     @required this.onBackButtonPress,
+    @required this.onNowPlayTap,
   }) : super(key: key);
 
   final bool podcastPageOpen;
   final Future<Podcast> fp;
   final Podcast selectedPodcast;
   final Function onBackButtonPress;
+  final Function() onNowPlayTap;
 
   @override
   _PodcastPageState createState() => _PodcastPageState();
@@ -34,43 +36,61 @@ class _PodcastPageState extends State<PodcastPage> {
         child: FutureBuilder(
           future: widget.fp,
           builder: (BuildContext context, AsyncSnapshot<Podcast> snapshot) {
+            if(snapshot == null || !snapshot.hasData || snapshot.data == null)
+              return Container();
+
             return Container(
               color: Theme.of(context).primaryColor,
               height: MediaQuery.of(context).size.height,
               width: MediaQuery.of(context).size.width,
-              child: Column(
-                children: <Widget>[
-                  Padding(
-                    padding: const EdgeInsets.all(10.0),
-                    child: Row(
-                      children: <Widget>[
-                        IconButton(
-                          icon: Icon(
-                            Icons.arrow_back,
-                            color: Colors.grey,
-                            size: 30.0,
-                          ),
-                          onPressed: widget.onBackButtonPress,
-                        ),
-                        Flexible(
-                          child: RichText(
-                            text: TextSpan(
-                              text: widget.selectedPodcast.title,
-                              style: TextStyle(
-                                color: Colors.black,
-                                fontSize: 26.0
-                              )
+              child: CustomScrollView(
+                slivers: <Widget>[
+                  SliverAppBar(
+                    elevation: 0.0,
+                    centerTitle: true,
+                    floating: true,
+                    flexibleSpace: FlexibleSpaceBar(
+                      centerTitle: true,
+                      title: Padding(
+                        padding: const EdgeInsets.only(left: 10.0, right: 10.0, top: 10.0),
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: <Widget>[
+                            Container(
+                              width: 50.0,
+                              alignment: Alignment.center,
+                              child: IconButton(
+                                icon: Icon(Icons.arrow_back, color: Colors.grey, size: 30.0,),
+                                onPressed: widget.onBackButtonPress,
+                              ),
                             ),
-                          ),
+                            Flexible(
+                              fit: FlexFit.tight,
+                              child: Container(
+                                alignment: Alignment.center,
+                                child: RichText(
+                                  textAlign: TextAlign.center,
+                                  text: TextSpan(
+                                    text: snapshot.data?.title ?? "",
+                                    style: Theme.of(context).primaryTextTheme.title,
+                                  ),
+                                ),
+                              ),
+                            ),
+                            Container(
+                              width: 50.0,
+                              height: 50.0,
+                            ),
+                          ],
                         ),
-                      ],
+                      ),
                     ),
                   ),
-                  Padding(
-                    padding: const EdgeInsets.only(left: 10.0, right: 10.0, bottom: 20.0),
+                  SliverToBoxAdapter(
                     child: Container(
-                      height: 160.0,
-                      width: double.maxFinite,
+                      height: 150.0,
+                      width: MediaQuery.of(context).size.width,
                       child: Row(
                         children: <Widget>[
                           Expanded(
@@ -79,7 +99,7 @@ class _PodcastPageState extends State<PodcastPage> {
                               child: RichText(
                                 maxLines: 10,
                                 text: TextSpan(
-                                  text: widget.selectedPodcast.description,
+                                  text: snapshot.data?.description ?? "",
                                   style: TextStyle(
                                     color: Colors.black,
                                     fontSize: 18.0
@@ -98,7 +118,7 @@ class _PodcastPageState extends State<PodcastPage> {
                                 decoration: (snapshot.hasData)?
                                 BoxDecoration(
                                   image: DecorationImage(
-                                    image: NetworkImage(widget.selectedPodcast.artLink)??'   ',
+                                    image: NetworkImage(snapshot.data?.artLink)??'   ',
                                   ),
                                 ):
                                 BoxDecoration(
@@ -111,36 +131,35 @@ class _PodcastPageState extends State<PodcastPage> {
                       ),
                     ),
                   ),
-                  Expanded(
-                    child: Container(
-                      child: snapshot.hasData?
-                      ListView.builder(
-                        physics: BouncingScrollPhysics(),
-                        itemCount: widget.selectedPodcast.episodes.length,
-                        itemBuilder: (BuildContext context, int index) {
-                          return InkWell(
-                            onTap: () {
-                              PodcastProvider.of(context).setEpisode(
-                                widget.selectedPodcast.episodes.elementAt(index)
-                              );
-                              setState((){});
-                            },
-                            child: Container(
-                              width: double.maxFinite,
-                              height: 100.0,
-                              child: RichText(
-                                text: TextSpan(
-                                  text: widget.selectedPodcast.episodes.elementAt(index).name,
-                                  style: TextStyle(
-                                    color: Colors.black
-                                  )
-                                ),
+                  SliverList(
+                    delegate: SliverChildBuilderDelegate(
+                      (BuildContext context, int index) {
+                        if(snapshot.data.episodes == null)
+                          return Container();
+
+                        return InkWell(
+                          onTap: () {
+                            widget.onNowPlayTap();
+                            PodcastProvider.of(context).setEpisode(
+                              snapshot.data.episodes.elementAt(index)
+                            );
+                            setState((){});
+                          },
+                          child: Container(
+                            width: double.maxFinite,
+                            alignment: Alignment.centerLeft,
+                            height: 100.0,
+                            child: RichText(
+                              text: TextSpan(
+                                text: snapshot.data.episodes.elementAt(index).name,
+                                style: TextStyle(
+                                  color: Colors.black
+                                )
                               ),
                             ),
-                          );
-                        },
-                      ):
-                      Container(),
+                          ),
+                        );
+                      }
                     ),
                   ),
                 ],

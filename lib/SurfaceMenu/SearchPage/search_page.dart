@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:http/http.dart';
@@ -13,8 +12,10 @@ import 'package:webfeed/webfeed.dart';
 class SearchPage extends StatefulWidget {
   const SearchPage({
     Key key,
+    @required this.onNowPlayTap,
   }) : super(key: key);
 
+  final Function() onNowPlayTap;
 
   @override
   _SearchPageState createState() => _SearchPageState();
@@ -158,6 +159,7 @@ class _SearchPageState extends State<SearchPage> with TickerProviderStateMixin {
                 podcastPageOpen = false;
               });
             },
+            onNowPlayTap: widget.onNowPlayTap,
           ),
         ],
       ),

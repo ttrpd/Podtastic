@@ -91,7 +91,9 @@ class _PodcastMenuState extends State<PodcastMenu> {
                     enabled: true,
                     selected: widget.surfaceDrawerPage is SearchPage,
                     onPressed: (){
-                      widget.setSurfaceDrawerPage(SearchPage());
+                      widget.setSurfaceDrawerPage(SearchPage(
+                        onNowPlayTap: widget.onNowPlayingTap,
+                      ));
                       widget.onMenuTap();
                       setState(() {
                         menuTitle = 'Search';
@@ -113,7 +115,9 @@ class _PodcastMenuState extends State<PodcastMenu> {
                     enabled: true,
                     selected: widget.surfaceDrawerPage is MyPodcastsPage,
                     onPressed: (){
-                      widget.setSurfaceDrawerPage(MyPodcastsPage());
+                      widget.setSurfaceDrawerPage(MyPodcastsPage(
+                        onNowPlayTap: widget.onNowPlayingTap,
+                      ));
                       widget.onMenuTap();
                       setState(() {
                         menuTitle = 'My Podcasts';

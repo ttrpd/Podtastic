@@ -24,7 +24,7 @@ class _MainSurfaceMenuState extends State<MainSurfaceMenu> with TickerProviderSt
 
   AnimationController finishSlideController;
 
-  Widget surfaceDrawerPage = SearchPage();
+  Widget surfaceDrawerPage;
 
   onMenuTap()
   {
@@ -84,6 +84,10 @@ class _MainSurfaceMenuState extends State<MainSurfaceMenu> with TickerProviderSt
 
   @override
   Widget build(BuildContext context) {
+
+    if(surfaceDrawerPage == null)
+      surfaceDrawerPage = SearchPage(onNowPlayTap: onNowPlayingTap,);
+
     return Scaffold(
       backgroundColor: Theme.of(context).backgroundColor,
       body: Stack(

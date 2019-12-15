@@ -19,8 +19,12 @@ class PodcastProvider extends InheritedWidget
   Episode playingEpisode;
 
   Future<void> setEpisode(Episode ep) async {
+
+
+    // set currently playing episode
     ep.link = ep.link.replaceRange(0, ep.link.indexOf(':'), "https");
     playingEpisode = ep;
+    // play currently playing episode
     audioPlayer.setUrl(ep.link);
     audioPlayer.onDurationChanged.listen((d) => endTime = d);
     audioPlayer.onAudioPositionChanged.listen((p) => currentTime = p);
