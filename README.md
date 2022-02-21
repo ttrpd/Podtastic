@@ -1,3 +1,3 @@
-# podtastic
+# Podtastic
 
-A new Flutter project.
+A Dart & Flutter proof of concept.
